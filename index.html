@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rashid Ayub - Frontend Developer Portfolio. Building modern, responsive and high-performance websites.">
+  <meta name="keywords" content="Rashid Ayub, Frontend Developer, React, JavaScript, Portfolio, Web Developer">
+  <meta name="author" content="Rashid Ayub">
+  <meta property="og:title" content="Rashid Ayub | Frontend Developer">
+  <meta property="og:description" content="Modern, responsive and high-performance web development portfolio.">
+  <meta property="og:type" content="website">
+  <title>Rashid Ayub | Frontend Developer</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>RA</text></svg>">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ========== PAGE LOADER ========== -->
+  <div id="page-loader">
+    <div class="loader-content">
+      <div class="loader-logo">RA</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+      <p class="loader-text">Loading Portfolio...</p>
+    </div>
+  </div>
+
+  <!-- ========== CUSTOM CURSOR ========== -->
+  <div class="cursor-dot"></div>
+  <div class="cursor-outline"></div>
+
+  <!-- ========== SCROLL PROGRESS ========== -->
+  <div class="scroll-progress"></div>
+
+  <!-- ========== PARTICLE BACKGROUND ========== -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- ========== THREE.JS CANVAS ========== -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand" href="#home">
+        <div class="logo-circle">RA</div>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#resume">Resume</a></li>
+          <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          <li class="nav-item ms-lg-3">
+            <button class="theme-toggle magnetic-btn" id="themeToggle" aria-label="Toggle theme">
+              <i class="fas fa-moon"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== HERO SECTION ========== -->
+  <section id="home" class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="container h-100">
+      <div class="row h-100 align-items-center justify-content-center">
+        <div class="col-lg-10 text-center">
+          <p class="hero-greeting reveal-text" data-aos="fade-up">Hi, I am</p>
+          <h1 class="hero-name reveal-text" data-aos="fade-up" data-aos-delay="100">
+            <span class="text-gold">Rashid Ayub</span>
+          </h1>
+          <h2 class="hero-title">
+            <span id="typed-text"></span><span class="typed-cursor">|</span>
+          </h2>
+          <p class="hero-description" data-aos="fade-up" data-aos-delay="300">
+            I build modern, responsive and high-performance websites using HTML, CSS, JavaScript, React, Tailwind CSS and modern frontend technologies.
+          </p>
+          <div class="hero-social" data-aos="fade-up" data-aos-delay="400">
+            <a href="https://github.com/RashidAyub" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="GitHub">
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/rashid-ayub-8284b4299" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="LinkedIn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="Instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="mailto:rashid.ayub@email.com" class="social-icon magnetic-btn" aria-label="Email">
+              <i class="fas fa-envelope"></i>
+            </a>
+          </div>
+          <div class="hero-cta" data-aos="fade-up" data-aos-delay="500">
+            <a href="#contact" class="btn btn-gold magnetic-btn">Hire Me</a>
+            <a href="#portfolio" class="btn btn-outline-gold magnetic-btn">View Work</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="mouse">
+        <div class="wheel"></div>
+      </div>
+      <span>Scroll Down</span>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT SECTION ========== -->
+  <section id="about" class="section-padding">
+    <div class="container">
+      <div class="section-header text-center" data-aos="fade-up">
+        <span class="section-tag">About Me</span>
+        <h2 class="section-title">Get To Know <span class="text-gold">Me</span></h2>
+      </div>
+      <div class="row align-items-center g-5 mt-4">
+        <!-- Profile Image Placeholder -->
+        <div class="col-lg-5" data-aos="fade-right">
+          <div class="about-image-wrapper">
+            <div class="about-image-border"></div>
+            <!-- Replace src with your own profile photo -->
+            <img src="images/profile.png" alt="Rashid Ayub - Profile Photo" class="about-image" id="profileImage">
+            <div class="about-image-badge">
+              <span class="counter" data-target="2">0</span>+
+              <small>Years Exp.</small>
+            </div>
+          </div>
+        </div>
+        <!-- About Content -->
+        <div class="col-lg-7" data-aos="fade-left">
+          <h3 class="about-heading">Hi There! I'm <span class="text-gold">Rashid Ayub</span></h3>
+          <p class="about-subheading">Frontend Developer</p>
+          <p class="about-text">
+            I am a passionate Frontend Developer with a strong focus on creating beautiful, intuitive, and high-performance web experiences. With expertise in modern JavaScript frameworks and responsive design, I transform creative ideas into pixel-perfect, user-friendly digital products. I thrive on solving complex problems and delivering clean, maintainable code that exceeds client expectations.
+          </p>
+          <div class="row about-info g-3 mt-3">
+            <div class="col-sm-6">
+              <div class="info-item">
+                <i class="fas fa-birthday-cake"></i>
+                <div>
+                  <strong>Birthday</strong>
+                  <span>January 15, 2000</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-item">
+                <i class="fas fa-phone"></i>
+                <div>
+                  <strong>Phone</strong>
+                  <span>+92 300 1234567</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-item">
+                <i class="fas fa-envelope"></i>
+                <div>
+                  <strong>Email</strong>
+                  <span>rashid.ayub@email.com</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                  <strong>Location</strong>
+                  <span>Pakistan</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-item">
+                <i class="fas fa-flag"></i>
+                <div>
+                  <strong>Nationality</strong>
+                  <span>Pakistani</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-item">
+                <i class="fas fa-language"></i>
+                <div>
+                  <strong>Languages</strong>
+                  <span>English, Urdu</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-item">
+                <i class="fas fa-briefcase"></i>
+                <div>
+                  <strong>Experience</strong>
+                  <span>2+ Years</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-item">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                  <strong>Freelance</strong>
+                  <span class="text-gold">Available</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a href="#" class="btn btn-gold magnetic-btn mt-4" download>
+            <i class="fas fa-download me-2"></i>Download CV
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SERVICES SECTION ========== -->
+  <section id="services" class="section-padding bg-section">
+    <div class="container">
+      <div class="section-header text-center" data-aos="fade-up">
+        <span class="section-tag">What I Do</span>
+        <h2 class="section-title">My <span class="text-gold">Services</span></h2>
+      </div>
+      <div class="row g-4 mt-4">
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="service-card">
+            <div class="service-icon"><i class="fas fa-code"></i></div>
+            <h4>Frontend Development</h4>
+            <p>Building robust, scalable frontend architectures with clean code and modern best practices.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="service-card">
+            <div class="service-icon"><i class="fab fa-react"></i></div>
+            <h4>React Development</h4>
+            <p>Creating dynamic, component-based applications with React.js for seamless user experiences.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="service-card">
+            <div class="service-icon"><i class="fas fa-mobile-alt"></i></div>
+            <h4>Responsive Website Design</h4>
+            <p>Designing websites that look stunning and function flawlessly on every device and screen size.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="service-card">
+            <div class="service-icon"><i class="fas fa-rocket"></i></div>
+            <h4>Landing Page Design</h4>
+            <p>Crafting high-converting landing pages that captivate visitors and drive meaningful action.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="service-card">
+            <div class="service-icon"><i class="fas fa-paint-brush"></i></div>
+            <h4>UI Implementation</h4>
+            <p>Translating Figma and design mockups into pixel-perfect, interactive web interfaces.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="service-card">
+            <div class="service-icon"><i class="fas fa-tachometer-alt"></i></div>
+            <h4>Website Optimization</h4>
+            <p>Optimizing performance, accessibility, and SEO to deliver lightning-fast web experiences.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SKILLS SECTION ========== -->
+  <section id="skills" class="section-padding">
+    <div class="container">
+      <div class="section-header text-center" data-aos="fade-up">
+        <span class="section-tag">My Expertise</span>
+        <h2 class="section-title">Technical <span class="text-gold">Skills</span></h2>
+      </div>
+      <div class="row g-4 mt-4">
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="skill-item">
+            <div class="skill-header">
+              <span>HTML5</span>
+              <span class="skill-percent">95%</span>
+            </div>
+            <div class="skill-bar"><div class="skill-progress" data-width="95"></div></div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="150">
+          <div class="skill-item">
+            <div class="skill-header">
+              <span>CSS3</span>
+              <span class="skill-percent">92%</span>
+            </div>
+            <div class="skill-bar"><div class="skill-progress" data-width="92"></div></div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="skill-item">
+            <div class="skill-header">
+              <span>JavaScript</span>
+              <span class="skill-percent">88%</span>
+            </div>
+            <div class="skill-bar"><div class="skill-progress" data-width="88"></div></div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250">
+          <div class="skill-item">
+            <div class="skill-header">
+              <span>React.js</span>
+              <span class="skill-percent">85%</span>
+            </div>
+            <div class="skill-bar"><div class="skill-progress" data-width="85"></div></div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
+          <div class="skill-item">
+            <div class="skill-header">
+              <span>Tailwind CSS</span>
+              <span class="skill-percent">90%</span>
+            </div>
+            <div class="skill-bar"><div class="skill-progress" data-width="90"></div></div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="350">
+          <div class="skill-item">
+            <div class="skill-header">
+              <span>Bootstrap</span>
+              <span class="skill-percent">93%</span>
+            </div>
+            <div class="skill-bar"><div class="skill-progress" data-width="93"></div></div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
+          <div class="skill-item">
+            <div class="skill-header">
+              <span>Git & GitHub</span>
+              <span class="skill-percent">87%</span>
+            </div>
+            <div class="skill-bar"><div class="skill-progress" data-width="87"></div></div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="450">
+          <div class="skill-item">
+            <div class="skill-header">
+              <span>Responsive Design</span>
+              <span class="skill-percent">94%</span>
+            </div>
+            <div class="skill-bar"><div class="skill-progress" data-width="94"></div></div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="500">
+          <div class="skill-item">
+            <div class="skill-header">
+              <span>REST API</span>
+              <span class="skill-percent">80%</span>
+            </div>
+            <div class="skill-bar"><div class="skill-progress" data-width="80"></div></div>
+          </div>
+        </div>
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="550">
+          <div class="skill-item">
+            <div class="skill-header">
+              <span>UI/UX Implementation</span>
+              <span class="skill-percent">86%</span>
+            </div>
+            <div class="skill-bar"><div class="skill-progress" data-width="86"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESUME SECTION ========== -->
+  <section id="resume" class="section-padding bg-section">
+    <div class="container">
+      <div class="section-header text-center" data-aos="fade-up">
+        <span class="section-tag">My Journey</span>
+        <h2 class="section-title">Resume & <span class="text-gold">Timeline</span></h2>
+      </div>
+      <div class="row g-5 mt-4">
+        <!-- Education -->
+        <div class="col-lg-6" data-aos="fade-right">
+          <h3 class="timeline-heading"><i class="fas fa-graduation-cap"></i> Education</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">2020 - 2024</span>
+                <h4>Bachelor of Computer Science</h4>
+                <p class="timeline-place">University of Management & Technology</p>
+                <p>Studied software engineering, data structures, web development, and computer science fundamentals.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">2018 - 2020</span>
+                <h4>Intermediate (Pre-Engineering)</h4>
+                <p class="timeline-place">Government College</p>
+                <p>Completed intermediate education with focus on mathematics and computer science.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Experience -->
+        <div class="col-lg-6" data-aos="fade-left">
+          <h3 class="timeline-heading"><i class="fas fa-briefcase"></i> Experience</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">2023 - Present</span>
+                <h4>Frontend Developer</h4>
+                <p class="timeline-place">Freelance Projects</p>
+                <p>Building responsive websites and web applications for clients worldwide using React and modern frontend tools.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">2022 - 2023</span>
+                <h4>Frontend Developer Intern</h4>
+                <p class="timeline-place">Tech Solutions Company</p>
+                <p>Assisted in developing UI components, fixing bugs, and implementing responsive designs for client projects.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">2024</span>
+                <h4>Best Portfolio Award</h4>
+                <p class="timeline-place">University Project Showcase</p>
+                <p>Recognized for outstanding web development project demonstrating modern design and clean code practices.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PORTFOLIO SECTION ========== -->
+  <section id="portfolio" class="section-padding">
+    <div class="container">
+      <div class="section-header text-center" data-aos="fade-up">
+        <span class="section-tag">My Work</span>
+        <h2 class="section-title">Featured <span class="text-gold">Portfolio</span></h2>
+      </div>
+      <!-- Filter Buttons -->
+      <div class="portfolio-filters text-center mt-4" data-aos="fade-up">
+        <button class="filter-btn active magnetic-btn" data-filter="all">All</button>
+        <button class="filter-btn magnetic-btn" data-filter="websites">Websites</button>
+        <button class="filter-btn magnetic-btn" data-filter="react">React Projects</button>
+        <button class="filter-btn magnetic-btn" data-filter="javascript">JavaScript</button>
+        <button class="filter-btn magnetic-btn" data-filter="ui">UI Designs</button>
+      </div>
+      <!-- Portfolio Grid -->
+      <div class="row g-4 mt-4 portfolio-grid">
+        <div class="col-md-6 col-lg-4 portfolio-item" data-category="websites react">
+          <div class="portfolio-card" data-aos="zoom-in">
+            <div class="portfolio-image">
+              <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop" alt="E-Commerce Website">
+              <div class="portfolio-overlay">
+                <div class="portfolio-info">
+                  <h4>E-Commerce Platform</h4>
+                  <span>Websites / React</span>
+                  <div class="portfolio-links">
+                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                    <a href="https://github.com/RashidAyub" target="_blank" class="magnetic-btn"><i class="fab fa-github"></i> GitHub</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 portfolio-item" data-category="react javascript">
+          <div class="portfolio-card" data-aos="zoom-in" data-aos-delay="100">
+            <div class="portfolio-image">
+              <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop" alt="Task Manager App">
+              <div class="portfolio-overlay">
+                <div class="portfolio-info">
+                  <h4>Task Manager App</h4>
+                  <span>React Projects</span>
+                  <div class="portfolio-links">
+                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                    <a href="https://github.com/RashidAyub" target="_blank" class="magnetic-btn"><i class="fab fa-github"></i> GitHub</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 portfolio-item" data-category="websites ui">
+          <div class="portfolio-card" data-aos="zoom-in" data-aos-delay="200">
+            <div class="portfolio-image">
+              <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=600&h=400&fit=crop" alt="Agency Landing Page">
+              <div class="portfolio-overlay">
+                <div class="portfolio-info">
+                  <h4>Agency Landing Page</h4>
+                  <span>Websites / UI Designs</span>
+                  <div class="portfolio-links">
+                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                    <a href="https://github.com/RashidAyub" target="_blank" class="magnetic-btn"><i class="fab fa-github"></i> GitHub</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 portfolio-item" data-category="javascript">
+          <div class="portfolio-card" data-aos="zoom-in">
+            <div class="portfolio-image">
+              <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=600&h=400&fit=crop" alt="Weather Dashboard">
+              <div class="portfolio-overlay">
+                <div class="portfolio-info">
+                  <h4>Weather Dashboard</h4>
+                  <span>JavaScript</span>
+                  <div class="portfolio-links">
+                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                    <a href="https://github.com/RashidAyub" target="_blank" class="magnetic-btn"><i class="fab fa-github"></i> GitHub</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 portfolio-item" data-category="react ui">
+          <div class="portfolio-card" data-aos="zoom-in" data-aos-delay="100">
+            <div class="portfolio-image">
+              <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&h=400&fit=crop" alt="Finance Dashboard">
+              <div class="portfolio-overlay">
+                <div class="portfolio-info">
+                  <h4>Finance Dashboard</h4>
+                  <span>React / UI Designs</span>
+                  <div class="portfolio-links">
+                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                    <a href="https://github.com/RashidAyub" target="_blank" class="magnetic-btn"><i class="fab fa-github"></i> GitHub</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 portfolio-item" data-category="websites">
+          <div class="portfolio-card" data-aos="zoom-in" data-aos-delay="200">
+            <div class="portfolio-image">
+              <img src="images/profile.png" alt="Personal Portfolio">
+              <div class="portfolio-overlay">
+                <div class="portfolio-info">
+                  <h4>Personal Portfolio</h4>
+                  <span>Websites</span>
+                  <div class="portfolio-links">
+                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+                    <a href="https://github.com/RashidAyub/My-Portfolio" target="_blank" class="magnetic-btn"><i class="fab fa-github"></i> GitHub</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS SECTION ========== -->
+  <section id="testimonials" class="section-padding bg-section">
+    <div class="container">
+      <div class="section-header text-center" data-aos="fade-up">
+        <span class="section-tag">Testimonials</span>
+        <h2 class="section-title">Client <span class="text-gold">Reviews</span></h2>
+      </div>
+      <div class="testimonial-slider mt-5" data-aos="fade-up">
+        <div class="testimonial-track" id="testimonialTrack">
+          <div class="testimonial-slide">
+            <div class="testimonial-card glass-card">
+              <div class="testimonial-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <p>"Rashid delivered an exceptional website that exceeded our expectations. His attention to detail and modern design approach made our brand stand out. Highly recommended!"</p>
+              <div class="testimonial-author">
+                <div class="author-avatar">AK</div>
+                <div>
+                  <h5>Ahmed Khan</h5>
+                  <span>CEO, TechStart</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-slide">
+            <div class="testimonial-card glass-card">
+              <div class="testimonial-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <p>"Working with Rashid was a pleasure. He transformed our outdated website into a modern, responsive platform. Professional, communicative, and skilled."</p>
+              <div class="testimonial-author">
+                <div class="author-avatar">SF</div>
+                <div>
+                  <h5>Sara Fatima</h5>
+                  <span>Marketing Director</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-slide">
+            <div class="testimonial-card glass-card">
+              <div class="testimonial-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <p>"Outstanding React developer! Rashid built our dashboard from scratch with clean code and beautiful UI. Will definitely hire again for future projects."</p>
+              <div class="testimonial-author">
+                <div class="author-avatar">MR</div>
+                <div>
+                  <h5>Muhammad Rizwan</h5>
+                  <span>Product Manager</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-nav">
+          <button class="testimonial-prev magnetic-btn" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+          <div class="testimonial-dots"></div>
+          <button class="testimonial-next magnetic-btn" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT SECTION ========== -->
+  <section id="contact" class="section-padding">
+    <div class="container">
+      <div class="section-header text-center" data-aos="fade-up">
+        <span class="section-tag">Get In Touch</span>
+        <h2 class="section-title">Contact <span class="text-gold">Me</span></h2>
+      </div>
+      <div class="row g-5 mt-4">
+        <!-- Contact Info -->
+        <div class="col-lg-5" data-aos="fade-right">
+          <div class="contact-info-wrapper">
+            <h3>Contact Information</h3>
+            <p>Feel free to reach out for collaborations, freelance projects, or just a friendly hello!</p>
+            <div class="contact-info-item">
+              <div class="contact-icon"><i class="fas fa-phone"></i></div>
+              <div>
+                <strong>Phone</strong>
+                <span>+92 300 1234567</span>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+              <div>
+                <strong>Email</strong>
+                <span>rashid.ayub@email.com</span>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+              <div>
+                <strong>Address</strong>
+                <span>Lahore, Pakistan</span>
+              </div>
+            </div>
+            <div class="contact-social mt-4">
+              <a href="https://github.com/RashidAyub" target="_blank" class="social-icon magnetic-btn"><i class="fab fa-github"></i></a>
+              <a href="https://www.linkedin.com/in/rashid-ayub-8284b4299" target="_blank" class="social-icon magnetic-btn"><i class="fab fa-linkedin-in"></i></a>
+              <a href="https://facebook.com/" target="_blank" class="social-icon magnetic-btn"><i class="fab fa-facebook-f"></i></a>
+              <a href="https://instagram.com/" target="_blank" class="social-icon magnetic-btn"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+        <!-- Contact Form -->
+        <div class="col-lg-7" data-aos="fade-left">
+          <form class="contact-form glass-card" id="contactForm">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="contactName" placeholder="Your Name" required>
+                  <label for="contactName">Your Name</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <input type="email" class="form-control" id="contactEmail" placeholder="Your Email" required>
+                  <label for="contactEmail">Your Email</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="contactSubject" placeholder="Subject" required>
+                  <label for="contactSubject">Subject</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-floating">
+                  <textarea class="form-control" id="contactMessage" placeholder="Message" style="height: 150px" required></textarea>
+                  <label for="contactMessage">Message</label>
+                </div>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-gold magnetic-btn w-100">
+                  <i class="fas fa-paper-plane me-2"></i>Send Message
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="footer-brand">
+            <div class="logo-circle">RA</div>
+            <p>Frontend Developer passionate about creating beautiful, high-performance web experiences that make a lasting impact.</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <h5>Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <h5>Follow Me</h5>
+          <div class="footer-social">
+            <a href="https://github.com/RashidAyub" target="_blank" class="social-icon magnetic-btn"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/rashid-ayub-8284b4299" target="_blank" class="social-icon magnetic-btn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://facebook.com/" target="_blank" class="social-icon magnetic-btn"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://instagram.com/" target="_blank" class="social-icon magnetic-btn"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 <span class="text-gold">Rashid Ayub</span>. All Rights Reserved. Crafted with <i class="fas fa-heart text-gold"></i></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== BACK TO TOP ========== -->
+  <button class="back-to-top magnetic-btn" id="backToTop" aria-label="Back to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
