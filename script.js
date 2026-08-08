@@ -6,6 +6,7 @@
 
 /* ---------- DOM Ready ---------- */
 document.addEventListener('DOMContentLoaded', () => {
+  document.body.style.overflow = 'hidden';
   initLoader();
   initCustomCursor();
   initScrollProgress();
@@ -25,22 +26,256 @@ document.addEventListener('DOMContentLoaded', () => {
   initParticles();
   initThreeJS();
   initActiveNavLink();
+  initProfileTilt();
 });
 
-/* ---------- Page Loader ---------- */
+/* ---------- MIR 3D Page Loader ---------- */
+let mirLoaderRenderer = null;
+let mirLoaderAnimId = null;
+
 function initLoader() {
   const loader = document.getElementById('page-loader');
-  window.addEventListener('load', () => {
-    setTimeout(() => {
+  const progressBar = document.querySelector('.mir-loader-progress');
+  const percentEl = document.querySelector('.mir-loader-percent');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!loader) return;
+
+  initMirLoaderScene();
+
+  const finishLoader = (() => {
+    let done = false;
+    return () => {
+      if (done) return;
+      done = true;
+      document.body.style.overflow = '';
       loader.classList.add('loaded');
-      document.body.style.overflow = 'visible';
-    }, 2200);
+
+      if (mirLoaderAnimId) cancelAnimationFrame(mirLoaderAnimId);
+      if (mirLoaderRenderer) {
+        mirLoaderRenderer.dispose();
+        mirLoaderRenderer = null;
+      }
+
+      if (typeof gsap !== 'undefined') {
+        gsap.to(loader, {
+          opacity: 0,
+          scale: 1.05,
+          duration: reducedMotion ? 0.2 : 0.9,
+          ease: 'power3.inOut',
+          onComplete: () => {
+            loader.style.visibility = 'hidden';
+          },
+        });
+      } else {
+        loader.style.opacity = '0';
+        loader.style.visibility = 'hidden';
+      }
+    };
+  })();
+
+  const tryFinishLoader = (() => {
+    let animDone = false;
+    let pageLoaded = document.readyState === 'complete';
+    return (from) => {
+      if (from === 'anim') animDone = true;
+      if (from === 'load') pageLoaded = true;
+      if (animDone && pageLoaded) finishLoader();
+    };
+  })();
+
+  window.addEventListener('load', () => tryFinishLoader('load'), { once: true });
+  if (document.readyState === 'complete') tryFinishLoader('load');
+
+  if (typeof gsap !== 'undefined' && progressBar) {
+    const tl = gsap.timeline({
+      onComplete: () => tryFinishLoader('anim'),
+    });
+
+    tl.from('.mir-glass-layer', {
+      opacity: 0,
+      y: 30,
+      stagger: 0.12,
+      duration: reducedMotion ? 0.1 : 0.8,
+      ease: 'power3.out',
+    })
+    .from('.mir-logo-scene', {
+      opacity: 0,
+      scale: 0.85,
+      rotateX: 25,
+      duration: reducedMotion ? 0.1 : 1,
+      ease: 'power3.out',
+    }, '-=0.4')
+    .to('.mir-logo-shine', {
+      x: '240%',
+      duration: reducedMotion ? 0.1 : 1.2,
+      ease: 'power2.inOut',
+    }, '-=0.6')
+    .to('.mir-logo-main', {
+      backgroundPosition: '200% center',
+      duration: reducedMotion ? 0.1 : 1.5,
+      ease: 'none',
+    }, '-=1')
+    .to(progressBar, {
+      width: '100%',
+      duration: reducedMotion ? 0.2 : 1.8,
+      ease: 'power2.inOut',
+      onUpdate: function () {
+        if (percentEl) {
+          const p = Math.round(this.progress() * 100);
+          percentEl.textContent = p;
+        }
+      },
+    }, '-=1.2');
+
+    if (!reducedMotion) {
+      gsap.to('.mir-logo-scene', {
+        y: -8,
+        duration: 2.5,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+    }
+  } else {
+    window.addEventListener('load', () => {
+      setTimeout(() => tryFinishLoader('anim'), reducedMotion ? 300 : 1800);
+    }, { once: true });
+  }
+}
+
+function initMirLoaderScene() {
+  if (typeof THREE === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const canvas = document.getElementById('mir-loader-canvas');
+  if (!canvas) return;
+
+  const isMobile = window.innerWidth <= 768;
+  const particleCount = isMobile ? 40 : 80;
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x0b1120, 0.035);
+
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.z = 18;
+
+  mirLoaderRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isMobile });
+  mirLoaderRenderer.setSize(window.innerWidth, window.innerHeight);
+  mirLoaderRenderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+
+  const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+  const goldLight = new THREE.PointLight(0xffc107, 1.2, 50);
+  goldLight.position.set(5, 5, 10);
+  const tealLight = new THREE.PointLight(0x14b8a6, 0.6, 40);
+  tealLight.position.set(-8, -4, 8);
+  scene.add(ambient, goldLight, tealLight);
+
+  const shapes = [];
+  const geos = [
+    new THREE.IcosahedronGeometry(0.6, 0),
+    new THREE.OctahedronGeometry(0.5, 0),
+    new THREE.TorusGeometry(0.45, 0.12, 8, 20),
+  ];
+
+  for (let i = 0; i < (isMobile ? 5 : 10); i++) {
+    const mat = new THREE.MeshStandardMaterial({
+      color: 0xffc107,
+      metalness: 0.85,
+      roughness: 0.15,
+      transparent: true,
+      opacity: 0.35,
+      wireframe: i % 2 === 0,
+    });
+    const mesh = new THREE.Mesh(geos[i % geos.length], mat);
+    mesh.position.set((Math.random() - 0.5) * 24, (Math.random() - 0.5) * 14, (Math.random() - 0.5) * 10);
+    mesh.userData = {
+      rx: (Math.random() - 0.5) * 0.012,
+      ry: (Math.random() - 0.5) * 0.012,
+      float: Math.random() * Math.PI * 2,
+    };
+    scene.add(mesh);
+    shapes.push(mesh);
+  }
+
+  const particleGeo = new THREE.BufferGeometry();
+  const positions = new Float32Array(particleCount * 3);
+  for (let i = 0; i < particleCount * 3; i++) {
+    positions[i] = (Math.random() - 0.5) * 40;
+  }
+  particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const particles = new THREE.Points(
+    particleGeo,
+    new THREE.PointsMaterial({ color: 0xffc107, size: 0.06, transparent: true, opacity: 0.6 })
+  );
+  scene.add(particles);
+
+  let mouseX = 0;
+  let mouseY = 0;
+  document.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  const animate = () => {
+    mirLoaderAnimId = requestAnimationFrame(animate);
+    const t = Date.now() * 0.001;
+
+    shapes.forEach((mesh) => {
+      mesh.rotation.x += mesh.userData.rx;
+      mesh.rotation.y += mesh.userData.ry;
+      mesh.position.y += Math.sin(t + mesh.userData.float) * 0.004;
+    });
+
+    particles.rotation.y = t * 0.05;
+    camera.position.x += (mouseX * 2 - camera.position.x) * 0.03;
+    camera.position.y += (-mouseY * 2 - camera.position.y) * 0.03;
+    camera.lookAt(0, 0, 0);
+
+    mirLoaderRenderer.render(scene, camera);
+  };
+  animate();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    mirLoaderRenderer.setSize(window.innerWidth, window.innerHeight);
+  });
+}
+
+/* ---------- 3D Profile Card Tilt ---------- */
+function initProfileTilt() {
+  const card = document.getElementById('profileCard3d');
+  if (!card || window.innerWidth <= 991) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const inner = card.querySelector('.profile-card-inner');
+  const glow = card.querySelector('.profile-card-glow');
+  if (!inner) return;
+
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    const rotateY = (x - 0.5) * 16;
+    const rotateX = (0.5 - y) * 16;
+
+    inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    if (glow) {
+      glow.style.setProperty('--glow-x', `${x * 100}%`);
+      glow.style.setProperty('--glow-y', `${y * 100}%`);
+    }
+  });
+
+  card.addEventListener('mouseleave', () => {
+    inner.style.transform = 'rotateX(0) rotateY(0)';
   });
 }
 
 /* ---------- Custom Cursor ---------- */
 function initCustomCursor() {
   if (window.innerWidth <= 991) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const dot = document.querySelector('.cursor-dot');
   const outline = document.querySelector('.cursor-outline');
@@ -97,17 +332,16 @@ function initLenis() {
     smoothWheel: true,
   });
 
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
-
-  // Connect Lenis to GSAP ScrollTrigger
-  if (typeof ScrollTrigger !== 'undefined') {
+  if (typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined') {
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
+  } else {
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
   }
 
   // Smooth anchor links
@@ -417,7 +651,7 @@ function initTestimonialSlider() {
   const nextBtn = document.querySelector('.testimonial-next');
   const dotsContainer = document.querySelector('.testimonial-dots');
 
-  if (!track || !slides.length) return;
+  if (!track || !slides.length || !dotsContainer) return;
 
   let currentSlide = 0;
   const totalSlides = slides.length;
@@ -439,15 +673,19 @@ function initTestimonialSlider() {
     dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
   }
 
-  prevBtn.addEventListener('click', () => {
-    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-    goToSlide(currentSlide);
-  });
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      goToSlide(currentSlide);
+    });
+  }
 
-  nextBtn.addEventListener('click', () => {
-    currentSlide = (currentSlide + 1) % totalSlides;
-    goToSlide(currentSlide);
-  });
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      goToSlide(currentSlide);
+    });
+  }
 
   // Auto slide
   setInterval(() => {

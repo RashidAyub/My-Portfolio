@@ -157,74 +157,171 @@ ul {
   opacity: 0.3;
 }
 
-/* ---------- Page Loader ---------- */
+/* ---------- MIR 3D Page Loader ---------- */
 #page-loader {
   position: fixed;
   inset: 0;
-  background: var(--bg-primary);
+  background: radial-gradient(ellipse at center, #111827 0%, #0B1120 55%, #060a14 100%);
   z-index: 100000;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.6s, visibility 0.6s;
+  overflow: hidden;
 }
 
 #page-loader.loaded {
-  opacity: 0;
-  visibility: hidden;
   pointer-events: none;
 }
 
-.loader-content {
-  text-align: center;
-}
-
-.loader-logo {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-gold), #FF9800);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--bg-primary);
-  margin: 0 auto 24px;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-.loader-bar {
-  width: 200px;
-  height: 3px;
-  background: rgba(255, 193, 7, 0.2);
-  border-radius: 3px;
-  overflow: hidden;
-  margin: 0 auto 16px;
-}
-
-.loader-progress {
+#mir-loader-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
   height: 100%;
+  z-index: 0;
+}
+
+.mir-loader-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, transparent 20%, rgba(6, 10, 20, 0.65) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.mir-loader-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  perspective: 1200px;
+}
+
+.mir-glass-stack {
+  position: absolute;
+  inset: -80px -120px;
+  pointer-events: none;
+}
+
+.mir-glass-layer {
+  position: absolute;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.mir-glass-layer-1 {
+  inset: 10% 5%;
+  transform: rotateX(12deg) rotateY(-8deg);
+  opacity: 0.5;
+}
+
+.mir-glass-layer-2 {
+  inset: 18% 12%;
+  transform: rotateX(-6deg) rotateY(10deg);
+  opacity: 0.35;
+}
+
+.mir-glass-layer-3 {
+  inset: 26% 18%;
+  transform: rotateX(4deg);
+  opacity: 0.25;
+  border-color: rgba(255, 193, 7, 0.15);
+}
+
+.mir-logo-scene {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 36px;
+  transform-style: preserve-3d;
+}
+
+.mir-logo-depth {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -48%) translateZ(-40px);
+  font-size: clamp(4rem, 14vw, 7rem);
+  font-weight: 800;
+  letter-spacing: 0.35em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 193, 7, 0.15);
+  opacity: 0.4;
+  user-select: none;
+}
+
+.mir-logo-main {
+  position: relative;
+  font-size: clamp(4rem, 14vw, 7rem);
+  font-weight: 800;
+  letter-spacing: 0.35em;
+  margin: 0;
+  padding-left: 0.35em;
+  background: linear-gradient(135deg, #ffffff 0%, #FFC107 45%, #FFD54F 70%, #ffffff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 40px rgba(255, 193, 7, 0.35);
+  transform: translateZ(20px);
+  user-select: none;
+}
+
+.mir-logo-shine {
+  position: absolute;
+  inset: -20% -10%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.25) 50%, transparent 60%);
+  transform: translateX(-120%) skewX(-15deg);
+  pointer-events: none;
+}
+
+.mir-loader-bar {
+  position: relative;
+  width: min(280px, 70vw);
+  height: 4px;
+  margin: 0 auto 18px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mir-loader-track {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+}
+
+.mir-loader-progress {
+  position: absolute;
+  inset: 0 auto 0 0;
   width: 0%;
-  background: var(--accent-gold);
-  border-radius: 3px;
-  animation: loadProgress 2s ease forwards;
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.4), var(--accent-gold), #FFD54F);
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
 }
 
-.loader-text {
+.mir-loader-status {
   color: var(--text-secondary);
-  font-size: 0.9rem;
-  letter-spacing: 2px;
+  font-size: 0.78rem;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
+  font-weight: 500;
 }
 
-@keyframes loadProgress {
-  to { width: 100%; }
+.mir-loader-percent {
+  color: var(--accent-gold);
+  font-weight: 700;
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); }
-  50% { transform: scale(1.05); box-shadow: 0 0 20px 10px rgba(255, 193, 7, 0); }
+@media (prefers-reduced-motion: reduce) {
+  .mir-glass-layer,
+  .mir-logo-main,
+  .mir-logo-shine {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 /* ---------- Navbar ---------- */
@@ -554,10 +651,68 @@ ul {
 }
 
 /* ---------- About Section ---------- */
-.about-image-wrapper {
+.profile-card-3d {
   position: relative;
   max-width: 420px;
   margin: 0 auto;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.profile-card-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 20px;
+  background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(255, 193, 7, 0.25), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.profile-card-3d:hover .profile-card-glow {
+  opacity: 1;
+}
+
+.profile-card-inner {
+  position: relative;
+  z-index: 1;
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.15s ease-out, box-shadow 0.4s ease;
+  will-change: transform;
+}
+
+.about-image-wrapper {
+  position: relative;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.about-image-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  z-index: 1;
+}
+
+.about-image-reflection {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 45%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.profile-card-3d:hover .about-image-reflection {
+  opacity: 1;
 }
 
 .about-image-border {
@@ -578,10 +733,11 @@ ul {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
-  border-radius: 8px;
+  object-position: center top;
+  border-radius: 14px;
   position: relative;
   z-index: 1;
-  filter: grayscale(20%);
+  filter: grayscale(10%);
   transition: var(--transition);
 }
 

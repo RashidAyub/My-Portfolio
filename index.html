@@ -33,12 +33,26 @@
 </head>
 <body>
 
-  <!-- ========== PAGE LOADER ========== -->
-  <div id="page-loader">
-    <div class="loader-content">
-      <div class="loader-logo">RA</div>
-      <div class="loader-bar"><div class="loader-progress"></div></div>
-      <p class="loader-text">Loading Portfolio...</p>
+  <!-- ========== MIR 3D LOADER ========== -->
+  <div id="page-loader" aria-hidden="true">
+    <canvas id="mir-loader-canvas"></canvas>
+    <div class="mir-loader-vignette"></div>
+    <div class="mir-loader-content">
+      <div class="mir-glass-stack">
+        <div class="mir-glass-layer mir-glass-layer-1"></div>
+        <div class="mir-glass-layer mir-glass-layer-2"></div>
+        <div class="mir-glass-layer mir-glass-layer-3"></div>
+      </div>
+      <div class="mir-logo-scene">
+        <span class="mir-logo-depth" aria-hidden="true">MIR</span>
+        <h1 class="mir-logo-main">MIR</h1>
+        <span class="mir-logo-shine" aria-hidden="true"></span>
+      </div>
+      <div class="mir-loader-bar">
+        <div class="mir-loader-track"></div>
+        <div class="mir-loader-progress"></div>
+      </div>
+      <p class="mir-loader-status"><span class="mir-loader-percent">0</span>% · Crafting Experience</p>
     </div>
   </div>
 
@@ -73,6 +87,7 @@
           <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
           <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
           <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
           <li class="nav-item ms-lg-3">
             <button class="theme-toggle magnetic-btn" id="themeToggle" aria-label="Toggle theme">
               <i class="fas fa-moon"></i>
@@ -141,13 +156,20 @@
       <div class="row align-items-center g-5 mt-4">
         <!-- Profile Image Placeholder -->
         <div class="col-lg-5" data-aos="fade-right">
-          <div class="about-image-wrapper">
-            <div class="about-image-border"></div>
-            <!-- Replace src with your own profile photo -->
-            <img src="images/profile.png" alt="Rashid Ayub - Profile Photo" class="about-image" id="profileImage">
-            <div class="about-image-badge">
-              <span class="counter" data-target="2">0</span>+
-              <small>Years Exp.</small>
+          <div class="profile-card-3d" id="profileCard3d">
+            <div class="profile-card-glow"></div>
+            <div class="profile-card-inner">
+              <div class="about-image-wrapper">
+                <div class="about-image-border"></div>
+                <div class="about-image-frame">
+                  <img src="mir.jpg" alt="Rashid Ayub - Frontend Developer Profile Photo" class="about-image" id="profileImage" width="420" height="420" loading="lazy">
+                  <div class="about-image-reflection"></div>
+                </div>
+                <div class="about-image-badge">
+                  <span class="counter" data-target="2">0</span>+
+                  <small>Years Exp.</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -752,6 +774,7 @@
             <li><a href="#services">Services</a></li>
             <li><a href="#portfolio">Portfolio</a></li>
             <li><a href="#contact">Contact</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
           </ul>
         </div>
         <div class="col-lg-4">

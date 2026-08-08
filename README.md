@@ -18,7 +18,8 @@ Deploy on [Vercel](https://vercel.com) for a live preview.
 - Animated typing effect
 - Counter animations
 - Scroll progress indicator
-- Premium page loader
+- Premium MIR 3D page loader
+- Developer dashboard hub
 - Glassmorphism UI
 - Portfolio filter gallery
 - Testimonial slider
@@ -55,7 +56,7 @@ Deploy on [Vercel](https://vercel.com) for a live preview.
 
 All personal information is easily editable in `index.html`:
 
-- **Profile Photo**: Replace `images/profile.png` with your own photo
+- **Profile Photo**: Uses `mir.jpg` in the project root (replace with your own photo)
 - **Personal Info**: Update the About section details (birthday, phone, email, etc.)
 - **Social Links**: Update GitHub, LinkedIn, Facebook, Instagram URLs
 - **Portfolio Projects**: Add your own projects in the Portfolio section
@@ -79,12 +80,14 @@ My-Portfolio/
 ├── index.html
 ├── style.css
 ├── script.js
+├── dashboard.html
+├── dashboard.css
+├── dashboard.js
+├── mir.jpg
 ├── vercel.json
 ├── README.md
 ├── images/
 │   └── profile.png
-├── assets/
-└── fonts/
 ```
 
 ## Author
