@@ -6,8 +6,7 @@
 
 /* ---------- DOM Ready ---------- */
 document.addEventListener('DOMContentLoaded', () => {
-  document.body.style.overflow = 'hidden';
-  initLoader();
+  initMirLoader();
   initCustomCursor();
   initScrollProgress();
   initLenis();
@@ -29,253 +28,220 @@ document.addEventListener('DOMContentLoaded', () => {
   initProfileTilt();
 });
 
-/* ---------- MIR 3D Page Loader ---------- */
+/* ---------- MIR 3D Loader ---------- */
 let mirLoaderRenderer = null;
 let mirLoaderAnimId = null;
 
-function initLoader() {
+function initMirLoader() {
   const loader = document.getElementById('page-loader');
-  const progressBar = document.querySelector('.mir-loader-progress');
-  const percentEl = document.querySelector('.mir-loader-percent');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   if (!loader) return;
 
-  initMirLoaderScene();
+  document.body.classList.add('loading');
 
-  const finishLoader = (() => {
-    let done = false;
-    return () => {
-      if (done) return;
-      done = true;
-      document.body.style.overflow = '';
-      loader.classList.add('loaded');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const progressBar = loader.querySelector('.mir-loader-progress');
+  const progressWrap = loader.querySelector('.mir-loader-bar');
+  const statusText = loader.querySelector('.mir-loader-status');
 
-      if (mirLoaderAnimId) cancelAnimationFrame(mirLoaderAnimId);
-      if (mirLoaderRenderer) {
-        mirLoaderRenderer.dispose();
-        mirLoaderRenderer = null;
-      }
+  if (!reducedMotion) {
+    initMirLoaderThreeJS();
+  }
 
-      if (typeof gsap !== 'undefined') {
-        gsap.to(loader, {
-          opacity: 0,
-          scale: 1.05,
-          duration: reducedMotion ? 0.2 : 0.9,
-          ease: 'power3.inOut',
-          onComplete: () => {
-            loader.style.visibility = 'hidden';
-          },
-        });
-      } else {
-        loader.style.opacity = '0';
-        loader.style.visibility = 'hidden';
-      }
-    };
-  })();
+  const finishLoading = () => {
+    if (mirLoaderAnimId) cancelAnimationFrame(mirLoaderAnimId);
+    if (mirLoaderRenderer) {
+      mirLoaderRenderer.dispose();
+      mirLoaderRenderer = null;
+    }
 
-  const tryFinishLoader = (() => {
-    let animDone = false;
-    let pageLoaded = document.readyState === 'complete';
-    return (from) => {
-      if (from === 'anim') animDone = true;
-      if (from === 'load') pageLoaded = true;
-      if (animDone && pageLoaded) finishLoader();
-    };
-  })();
+    loader.classList.add('loaded');
+    document.body.classList.remove('loading');
+    document.body.style.overflow = 'visible';
+  };
 
-  window.addEventListener('load', () => tryFinishLoader('load'), { once: true });
-  if (document.readyState === 'complete') tryFinishLoader('load');
+  if (reducedMotion || typeof gsap === 'undefined') {
+    if (progressBar) progressBar.style.width = '100%';
+    window.addEventListener('load', () => setTimeout(finishLoading, 400));
+    return;
+  }
 
-  if (typeof gsap !== 'undefined' && progressBar) {
-    const tl = gsap.timeline({
-      onComplete: () => tryFinishLoader('anim'),
-    });
+  const tl = gsap.timeline({
+    onComplete: () => {
+      gsap.to(loader.querySelector('.mir-loader-scene'), {
+        scale: 1.08,
+        opacity: 0,
+        duration: 0.7,
+        ease: 'power2.inOut',
+        onComplete: finishLoading,
+      });
+    },
+  });
 
-    tl.from('.mir-glass-layer', {
-      opacity: 0,
-      y: 30,
-      stagger: 0.12,
-      duration: reducedMotion ? 0.1 : 0.8,
+  tl.set('.mir-logo-main', { opacity: 0, scale: 0.6, rotateX: -25, transformPerspective: 800 })
+    .to('.mir-logo-main', {
+      opacity: 1,
+      scale: 1,
+      rotateX: 0,
+      duration: 1,
       ease: 'power3.out',
     })
-    .from('.mir-logo-scene', {
-      opacity: 0,
-      scale: 0.85,
-      rotateX: 25,
-      duration: reducedMotion ? 0.1 : 1,
-      ease: 'power3.out',
-    }, '-=0.4')
-    .to('.mir-logo-shine', {
-      x: '240%',
-      duration: reducedMotion ? 0.1 : 1.2,
-      ease: 'power2.inOut',
-    }, '-=0.6')
+    .to('.mir-logo-shadow', { opacity: 0.6, duration: 0.6 }, '-=0.6')
+    .to('.mir-glass-1', { opacity: 1, duration: 0.8, ease: 'power2.out' }, '-=0.5')
+    .to('.mir-glass-2', { opacity: 0.85, duration: 0.8, ease: 'power2.out' }, '-=0.6')
+    .to('.mir-logo-reflection', { opacity: 0.5, duration: 0.7 }, '-=0.4')
     .to('.mir-logo-main', {
       backgroundPosition: '200% center',
-      duration: reducedMotion ? 0.1 : 1.5,
+      duration: 1.2,
       ease: 'none',
-    }, '-=1')
+    }, '-=0.3')
+    .to('.mir-loader-bar', { opacity: 1, duration: 0.4 }, '-=0.8')
+    .to('.mir-loader-status', { opacity: 1, duration: 0.4 }, '-=0.4')
     .to(progressBar, {
       width: '100%',
-      duration: reducedMotion ? 0.2 : 1.8,
+      duration: 1.4,
       ease: 'power2.inOut',
-      onUpdate: function () {
-        if (percentEl) {
-          const p = Math.round(this.progress() * 100);
-          percentEl.textContent = p;
+      onUpdate: () => {
+        if (progressWrap && progressWrap.offsetWidth) {
+          const pct = Math.round((parseFloat(getComputedStyle(progressBar).width) / progressWrap.offsetWidth) * 100);
+          progressWrap.setAttribute('aria-valuenow', Math.min(pct, 100));
         }
       },
-    }, '-=1.2');
+    }, '-=0.2');
 
-    if (!reducedMotion) {
-      gsap.to('.mir-logo-scene', {
-        y: -8,
-        duration: 2.5,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-      });
+  const statusMessages = ['Initializing Experience', 'Loading Assets', 'Preparing Interface'];
+  let msgIndex = 0;
+  tl.call(() => {
+    if (statusText && msgIndex < statusMessages.length - 1) {
+      msgIndex += 1;
+      statusText.textContent = statusMessages[msgIndex];
     }
-  } else {
-    window.addEventListener('load', () => {
-      setTimeout(() => tryFinishLoader('anim'), reducedMotion ? 300 : 1800);
-    }, { once: true });
-  }
+  }, null, '-=1');
+
+  window.addEventListener('load', () => {
+    if (statusText) statusText.textContent = 'Ready';
+  });
 }
 
-function initMirLoaderScene() {
+function initMirLoaderThreeJS() {
   if (typeof THREE === 'undefined') return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const canvas = document.getElementById('mir-loader-canvas');
   if (!canvas) return;
 
-  const isMobile = window.innerWidth <= 768;
-  const particleCount = isMobile ? 40 : 80;
-
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x0b1120, 0.035);
-
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-  camera.position.z = 18;
+  camera.position.z = 8;
 
-  mirLoaderRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isMobile });
+  mirLoaderRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   mirLoaderRenderer.setSize(window.innerWidth, window.innerHeight);
-  mirLoaderRenderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
-
-  const ambient = new THREE.AmbientLight(0xffffff, 0.4);
-  const goldLight = new THREE.PointLight(0xffc107, 1.2, 50);
-  goldLight.position.set(5, 5, 10);
-  const tealLight = new THREE.PointLight(0x14b8a6, 0.6, 40);
-  tealLight.position.set(-8, -4, 8);
-  scene.add(ambient, goldLight, tealLight);
+  mirLoaderRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
   const shapes = [];
   const geos = [
-    new THREE.IcosahedronGeometry(0.6, 0),
-    new THREE.OctahedronGeometry(0.5, 0),
-    new THREE.TorusGeometry(0.45, 0.12, 8, 20),
+    new THREE.IcosahedronGeometry(0.35, 0),
+    new THREE.OctahedronGeometry(0.3, 0),
+    new THREE.TorusGeometry(0.25, 0.08, 8, 16),
   ];
 
-  for (let i = 0; i < (isMobile ? 5 : 10); i++) {
-    const mat = new THREE.MeshStandardMaterial({
+  for (let i = 0; i < 6; i++) {
+    const mat = new THREE.MeshBasicMaterial({
       color: 0xffc107,
-      metalness: 0.85,
-      roughness: 0.15,
+      wireframe: true,
       transparent: true,
-      opacity: 0.35,
-      wireframe: i % 2 === 0,
+      opacity: 0.12 + Math.random() * 0.08,
     });
     const mesh = new THREE.Mesh(geos[i % geos.length], mat);
-    mesh.position.set((Math.random() - 0.5) * 24, (Math.random() - 0.5) * 14, (Math.random() - 0.5) * 10);
+    const angle = (i / 6) * Math.PI * 2;
+    mesh.position.set(Math.cos(angle) * 3.5, Math.sin(angle) * 2, (Math.random() - 0.5) * 2);
     mesh.userData = {
-      rx: (Math.random() - 0.5) * 0.012,
-      ry: (Math.random() - 0.5) * 0.012,
-      float: Math.random() * Math.PI * 2,
+      rotX: (Math.random() - 0.5) * 0.015,
+      rotY: (Math.random() - 0.5) * 0.015,
+      floatOffset: Math.random() * Math.PI * 2,
     };
     scene.add(mesh);
     shapes.push(mesh);
   }
 
-  const particleGeo = new THREE.BufferGeometry();
-  const positions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount * 3; i++) {
-    positions[i] = (Math.random() - 0.5) * 40;
-  }
-  particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const particles = new THREE.Points(
-    particleGeo,
-    new THREE.PointsMaterial({ color: 0xffc107, size: 0.06, transparent: true, opacity: 0.6 })
-  );
-  scene.add(particles);
+  const startTime = Date.now();
 
-  let mouseX = 0;
-  let mouseY = 0;
-  document.addEventListener('mousemove', (e) => {
-    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-  });
-
-  const animate = () => {
+  function animate() {
     mirLoaderAnimId = requestAnimationFrame(animate);
-    const t = Date.now() * 0.001;
+    const t = (Date.now() - startTime) * 0.001;
 
     shapes.forEach((mesh) => {
-      mesh.rotation.x += mesh.userData.rx;
-      mesh.rotation.y += mesh.userData.ry;
-      mesh.position.y += Math.sin(t + mesh.userData.float) * 0.004;
+      mesh.rotation.x += mesh.userData.rotX;
+      mesh.rotation.y += mesh.userData.rotY;
+      mesh.position.y += Math.sin(t + mesh.userData.floatOffset) * 0.002;
     });
 
-    particles.rotation.y = t * 0.05;
-    camera.position.x += (mouseX * 2 - camera.position.x) * 0.03;
-    camera.position.y += (-mouseY * 2 - camera.position.y) * 0.03;
+    camera.position.x = Math.sin(t * 0.3) * 0.3;
     camera.lookAt(0, 0, 0);
 
     mirLoaderRenderer.render(scene, camera);
-  };
+  }
   animate();
 
   window.addEventListener('resize', () => {
+    if (!mirLoaderRenderer) return;
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     mirLoaderRenderer.setSize(window.innerWidth, window.innerHeight);
   });
 }
 
-/* ---------- 3D Profile Card Tilt ---------- */
+/* ---------- Profile 3D Tilt ---------- */
 function initProfileTilt() {
-  const card = document.getElementById('profileCard3d');
-  if (!card || window.innerWidth <= 991) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const card = document.getElementById('profileTiltCard');
+  const frame = card?.querySelector('.profile-glass-frame');
+  const glow = card?.querySelector('.profile-glow');
+  if (!card || !frame || window.innerWidth <= 991) return;
 
-  const inner = card.querySelector('.profile-card-inner');
-  const glow = card.querySelector('.profile-card-glow');
-  if (!inner) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    const rotateY = (x - 0.5) * 16;
-    const rotateX = (0.5 - y) * 16;
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
 
-    inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    const rotateX = y * -12;
+    const rotateY = x * 12;
+
+    if (typeof gsap !== 'undefined') {
+      gsap.to(frame, {
+        rotateX,
+        rotateY,
+        duration: 0.4,
+        ease: 'power2.out',
+        transformPerspective: 1000,
+      });
+    } else {
+      frame.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    }
+
     if (glow) {
-      glow.style.setProperty('--glow-x', `${x * 100}%`);
-      glow.style.setProperty('--glow-y', `${y * 100}%`);
+      glow.style.left = `${(x + 0.5) * 100}%`;
+      glow.style.top = `${(y + 0.5) * 100}%`;
     }
   });
 
   card.addEventListener('mouseleave', () => {
-    inner.style.transform = 'rotateX(0) rotateY(0)';
+    if (typeof gsap !== 'undefined') {
+      gsap.to(frame, {
+        rotateX: 0,
+        rotateY: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        transformPerspective: 1000,
+      });
+    } else {
+      frame.style.transform = '';
+    }
   });
 }
 
 /* ---------- Custom Cursor ---------- */
 function initCustomCursor() {
   if (window.innerWidth <= 991) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const dot = document.querySelector('.cursor-dot');
   const outline = document.querySelector('.cursor-outline');
@@ -332,16 +298,17 @@ function initLenis() {
     smoothWheel: true,
   });
 
-  if (typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined') {
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+
+  // Connect Lenis to GSAP ScrollTrigger
+  if (typeof ScrollTrigger !== 'undefined') {
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
-  } else {
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
   }
 
   // Smooth anchor links
@@ -379,7 +346,7 @@ function initGSAP() {
     y: 60,
     opacity: 0,
     duration: 1,
-    delay: 2.5,
+    delay: 4.2,
     ease: 'power3.out',
   });
 
@@ -387,7 +354,7 @@ function initGSAP() {
     y: 80,
     opacity: 0,
     duration: 1.2,
-    delay: 2.7,
+    delay: 4.4,
     ease: 'power3.out',
   });
 
@@ -395,7 +362,7 @@ function initGSAP() {
     y: 40,
     opacity: 0,
     duration: 1,
-    delay: 3.2,
+    delay: 4.9,
     ease: 'power3.out',
   });
 
@@ -404,7 +371,7 @@ function initGSAP() {
     opacity: 0,
     duration: 0.6,
     stagger: 0.1,
-    delay: 3.5,
+    delay: 5.2,
     ease: 'power3.out',
   });
 
@@ -413,7 +380,7 @@ function initGSAP() {
     opacity: 0,
     duration: 0.6,
     stagger: 0.15,
-    delay: 3.8,
+    delay: 5.5,
     ease: 'power3.out',
   });
 
@@ -474,7 +441,7 @@ function initTyped() {
     backSpeed: 40,
     backDelay: 2000,
     loop: true,
-    startDelay: 3000,
+    startDelay: 4700,
   });
 }
 
@@ -651,7 +618,7 @@ function initTestimonialSlider() {
   const nextBtn = document.querySelector('.testimonial-next');
   const dotsContainer = document.querySelector('.testimonial-dots');
 
-  if (!track || !slides.length || !dotsContainer) return;
+  if (!track || !slides.length) return;
 
   let currentSlide = 0;
   const totalSlides = slides.length;
@@ -673,19 +640,15 @@ function initTestimonialSlider() {
     dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
   }
 
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-      goToSlide(currentSlide);
-    });
-  }
+  prevBtn.addEventListener('click', () => {
+    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+    goToSlide(currentSlide);
+  });
 
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      currentSlide = (currentSlide + 1) % totalSlides;
-      goToSlide(currentSlide);
-    });
-  }
+  nextBtn.addEventListener('click', () => {
+    currentSlide = (currentSlide + 1) % totalSlides;
+    goToSlide(currentSlide);
+  });
 
   // Auto slide
   setInterval(() => {

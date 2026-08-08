@@ -157,11 +157,11 @@ ul {
   opacity: 0.3;
 }
 
-/* ---------- MIR 3D Page Loader ---------- */
+/* ---------- MIR 3D Loader ---------- */
 #page-loader {
   position: fixed;
   inset: 0;
-  background: radial-gradient(ellipse at center, #111827 0%, #0B1120 55%, #060a14 100%);
+  background: radial-gradient(ellipse at center, #111827 0%, #0b1120 55%, #060a14 100%);
   z-index: 100000;
   display: flex;
   align-items: center;
@@ -170,7 +170,11 @@ ul {
 }
 
 #page-loader.loaded {
+  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
+  transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.9s, transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale(1.05);
 }
 
 #mir-loader-canvas {
@@ -178,150 +182,162 @@ ul {
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
-}
-
-.mir-loader-vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 45%, transparent 20%, rgba(6, 10, 20, 0.65) 100%);
-  z-index: 1;
   pointer-events: none;
 }
 
-.mir-loader-content {
+.mir-loader-scene {
   position: relative;
   z-index: 2;
   text-align: center;
   perspective: 1200px;
 }
 
-.mir-glass-stack {
+.mir-particles span {
   position: absolute;
-  inset: -80px -120px;
-  pointer-events: none;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 193, 7, 0.5);
+  box-shadow: 0 0 12px rgba(255, 193, 7, 0.4);
+  animation: mirFloat 4s ease-in-out infinite;
+}
+
+.mir-particles span:nth-child(1) { top: -80px; left: -120px; animation-delay: 0s; }
+.mir-particles span:nth-child(2) { top: -60px; right: -100px; animation-delay: 0.5s; }
+.mir-particles span:nth-child(3) { bottom: -70px; left: -90px; animation-delay: 1s; }
+.mir-particles span:nth-child(4) { bottom: -50px; right: -110px; animation-delay: 1.5s; }
+.mir-particles span:nth-child(5) { top: 20px; left: -140px; animation-delay: 0.8s; width: 3px; height: 3px; }
+.mir-particles span:nth-child(6) { top: 40px; right: -130px; animation-delay: 1.2s; width: 3px; height: 3px; }
+
+@keyframes mirFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
+  50% { transform: translateY(-12px) scale(1.2); opacity: 1; }
 }
 
 .mir-glass-layer {
   position: absolute;
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 20px 60px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 20px 60px rgba(0, 0, 0, 0.4);
+  opacity: 0;
 }
 
-.mir-glass-layer-1 {
-  inset: 10% 5%;
-  transform: rotateX(12deg) rotateY(-8deg);
-  opacity: 0.5;
+.mir-glass-1 {
+  width: 280px;
+  height: 120px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotateX(12deg) rotateY(-8deg);
+  margin-top: -30px;
 }
 
-.mir-glass-layer-2 {
-  inset: 18% 12%;
-  transform: rotateX(-6deg) rotateY(10deg);
-  opacity: 0.35;
+.mir-glass-2 {
+  width: 220px;
+  height: 90px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotateX(-6deg) rotateY(10deg);
+  margin-top: 20px;
+  background: rgba(255, 193, 7, 0.04);
+  border-color: rgba(255, 193, 7, 0.12);
 }
 
-.mir-glass-layer-3 {
-  inset: 26% 18%;
-  transform: rotateX(4deg);
-  opacity: 0.25;
-  border-color: rgba(255, 193, 7, 0.15);
-}
-
-.mir-logo-scene {
+.mir-logo-wrap {
   position: relative;
   display: inline-block;
   margin-bottom: 36px;
   transform-style: preserve-3d;
 }
 
-.mir-logo-depth {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -48%) translateZ(-40px);
-  font-size: clamp(4rem, 14vw, 7rem);
+.mir-logo-main,
+.mir-logo-shadow,
+.mir-logo-reflection {
+  font-size: clamp(4rem, 12vw, 7rem);
   font-weight: 800;
   letter-spacing: 0.35em;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(255, 193, 7, 0.15);
-  opacity: 0.4;
+  text-indent: 0.35em;
+  line-height: 1;
   user-select: none;
 }
 
 .mir-logo-main {
   position: relative;
-  font-size: clamp(4rem, 14vw, 7rem);
-  font-weight: 800;
-  letter-spacing: 0.35em;
-  margin: 0;
-  padding-left: 0.35em;
-  background: linear-gradient(135deg, #ffffff 0%, #FFC107 45%, #FFD54F 70%, #ffffff 100%);
+  z-index: 3;
+  background: linear-gradient(135deg, #ffffff 0%, #ffc107 45%, #ffd54f 70%, #ffffff 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 40px rgba(255, 193, 7, 0.35);
-  transform: translateZ(20px);
-  user-select: none;
+  filter: drop-shadow(0 0 30px rgba(255, 193, 7, 0.35));
+  transform: translateZ(40px);
+  opacity: 0;
 }
 
-.mir-logo-shine {
+.mir-logo-shadow {
   position: absolute;
-  inset: -20% -10%;
-  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.25) 50%, transparent 60%);
-  transform: translateX(-120%) skewX(-15deg);
-  pointer-events: none;
+  inset: 0;
+  z-index: 1;
+  color: transparent;
+  transform: translateZ(-20px) translateY(8px);
+  text-shadow: 0 8px 24px rgba(255, 193, 7, 0.25);
+  opacity: 0;
+}
+
+.mir-logo-reflection {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  letter-spacing: 0.35em;
+  text-indent: 0.35em;
+  background: linear-gradient(to bottom, rgba(255, 193, 7, 0.15), transparent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: scaleY(-0.35) translateY(-20px);
+  opacity: 0;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent);
 }
 
 .mir-loader-bar {
-  position: relative;
-  width: min(280px, 70vw);
-  height: 4px;
-  margin: 0 auto 18px;
+  width: min(260px, 70vw);
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 4px;
   overflow: hidden;
-}
-
-.mir-loader-track {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 4px;
+  margin: 0 auto 18px;
+  opacity: 0;
 }
 
 .mir-loader-progress {
-  position: absolute;
-  inset: 0 auto 0 0;
+  height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, rgba(255, 193, 7, 0.4), var(--accent-gold), #FFD54F);
+  background: linear-gradient(90deg, rgba(255, 193, 7, 0.5), var(--accent-gold), #ffd54f);
   border-radius: 4px;
-  box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+  box-shadow: 0 0 12px rgba(255, 193, 7, 0.5);
 }
 
 .mir-loader-status {
   color: var(--text-secondary);
-  font-size: 0.78rem;
-  letter-spacing: 0.25em;
+  font-size: 0.75rem;
+  letter-spacing: 0.35em;
   text-transform: uppercase;
-  font-weight: 500;
+  opacity: 0;
 }
 
-.mir-loader-percent {
-  color: var(--accent-gold);
-  font-weight: 700;
+body.loading {
+  overflow: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mir-glass-layer,
-  .mir-logo-main,
-  .mir-logo-shine {
-    animation: none !important;
-    transition: none !important;
-  }
+  .mir-particles { display: none; }
+  #mir-loader-canvas { display: none; }
 }
 
 /* ---------- Navbar ---------- */
@@ -651,99 +667,96 @@ ul {
 }
 
 /* ---------- About Section ---------- */
-.profile-card-3d {
+.about-image-wrapper {
   position: relative;
   max-width: 420px;
   margin: 0 auto;
+}
+
+.profile-tilt-card {
   transform-style: preserve-3d;
   perspective: 1000px;
 }
 
-.profile-card-glow {
-  position: absolute;
-  inset: -20px;
-  border-radius: 20px;
-  background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(255, 193, 7, 0.25), transparent 60%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.profile-card-3d:hover .profile-card-glow {
-  opacity: 1;
-}
-
-.profile-card-inner {
+.profile-glass-frame {
   position: relative;
-  z-index: 1;
-  padding: 16px;
   border-radius: 20px;
+  padding: 12px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition: transform 0.15s ease-out, box-shadow 0.4s ease;
+  transform-style: preserve-3d;
   will-change: transform;
 }
 
-.about-image-wrapper {
-  position: relative;
-  max-width: 100%;
-  margin: 0 auto;
-}
-
-.about-image-frame {
-  position: relative;
-  overflow: hidden;
-  border-radius: 14px;
-  z-index: 1;
-}
-
-.about-image-reflection {
+.profile-glow {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 45%, transparent 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 193, 7, 0.25), transparent 70%);
   pointer-events: none;
-  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
 }
 
-.profile-card-3d:hover .about-image-reflection {
+.profile-reflection {
+  position: absolute;
+  inset: 12px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 45%, transparent 100%);
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.profile-tilt-card:hover .profile-glow {
   opacity: 1;
+}
+
+.profile-tilt-card:hover .profile-glass-frame {
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.45), 0 0 40px rgba(255, 193, 7, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .about-image-border {
   position: absolute;
-  inset: -15px;
-  border: 2px solid var(--accent-gold);
-  border-radius: 8px;
-  opacity: 0.3;
+  inset: 4px;
+  border: 2px solid rgba(255, 193, 7, 0.35);
+  border-radius: 16px;
+  opacity: 0.5;
   transition: var(--transition);
+  z-index: 2;
+  pointer-events: none;
 }
 
-.about-image-wrapper:hover .about-image-border {
-  inset: -20px;
-  opacity: 0.6;
+.profile-tilt-card:hover .about-image-border {
+  inset: 0;
+  opacity: 0.85;
+  border-color: rgba(255, 193, 7, 0.6);
 }
 
 .about-image {
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
   object-position: center top;
   border-radius: 14px;
   position: relative;
   z-index: 1;
-  filter: grayscale(10%);
-  transition: var(--transition);
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s ease;
 }
 
-.about-image-wrapper:hover .about-image {
-  filter: grayscale(0%);
-  transform: scale(1.02);
+.profile-tilt-card:hover .about-image {
+  transform: scale(1.03) translateZ(20px);
 }
 
 .about-image-badge {

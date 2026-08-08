@@ -31,28 +31,26 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="loading">
 
   <!-- ========== MIR 3D LOADER ========== -->
-  <div id="page-loader" aria-hidden="true">
-    <canvas id="mir-loader-canvas"></canvas>
-    <div class="mir-loader-vignette"></div>
-    <div class="mir-loader-content">
-      <div class="mir-glass-stack">
-        <div class="mir-glass-layer mir-glass-layer-1"></div>
-        <div class="mir-glass-layer mir-glass-layer-2"></div>
-        <div class="mir-glass-layer mir-glass-layer-3"></div>
+  <div id="page-loader" aria-live="polite" aria-label="Loading portfolio">
+    <canvas id="mir-loader-canvas" aria-hidden="true"></canvas>
+    <div class="mir-loader-scene">
+      <div class="mir-particles" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
       </div>
-      <div class="mir-logo-scene">
-        <span class="mir-logo-depth" aria-hidden="true">MIR</span>
-        <h1 class="mir-logo-main">MIR</h1>
-        <span class="mir-logo-shine" aria-hidden="true"></span>
+      <div class="mir-glass-layer mir-glass-1"></div>
+      <div class="mir-glass-layer mir-glass-2"></div>
+      <div class="mir-logo-wrap">
+        <div class="mir-logo-shadow" aria-hidden="true">MIR</div>
+        <div class="mir-logo-main">MIR</div>
+        <div class="mir-logo-reflection" aria-hidden="true">MIR</div>
       </div>
-      <div class="mir-loader-bar">
-        <div class="mir-loader-track"></div>
+      <div class="mir-loader-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
         <div class="mir-loader-progress"></div>
       </div>
-      <p class="mir-loader-status"><span class="mir-loader-percent">0</span>% · Crafting Experience</p>
+      <p class="mir-loader-status">Initializing Experience</p>
     </div>
   </div>
 
@@ -156,20 +154,16 @@
       <div class="row align-items-center g-5 mt-4">
         <!-- Profile Image Placeholder -->
         <div class="col-lg-5" data-aos="fade-right">
-          <div class="profile-card-3d" id="profileCard3d">
-            <div class="profile-card-glow"></div>
-            <div class="profile-card-inner">
-              <div class="about-image-wrapper">
-                <div class="about-image-border"></div>
-                <div class="about-image-frame">
-                  <img src="mir.jpg" alt="Rashid Ayub - Frontend Developer Profile Photo" class="about-image" id="profileImage" width="420" height="420" loading="lazy">
-                  <div class="about-image-reflection"></div>
-                </div>
-                <div class="about-image-badge">
-                  <span class="counter" data-target="2">0</span>+
-                  <small>Years Exp.</small>
-                </div>
-              </div>
+          <div class="about-image-wrapper profile-tilt-card" id="profileTiltCard">
+            <div class="profile-glass-frame">
+              <div class="profile-glow"></div>
+              <div class="profile-reflection"></div>
+              <div class="about-image-border"></div>
+              <img src="images/profile.png" alt="Rashid Ayub - Profile Photo" class="about-image" id="profileImage" loading="lazy" width="420" height="420">
+            </div>
+            <div class="about-image-badge">
+              <span class="counter" data-target="2">0</span>+
+              <small>Years Exp.</small>
             </div>
           </div>
         </div>
