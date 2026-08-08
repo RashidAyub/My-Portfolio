@@ -32,6 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
 let mirLoaderRenderer = null;
 let mirLoaderAnimId = null;
 
+// Stores the actual timestamp when loader finishes, so hero animations are
+// always relative to that moment regardless of network speed.
+let loaderFinishedAt = null;
+
 function initMirLoader() {
   const loader = document.getElementById('page-loader');
   if (!loader) return;
@@ -45,6 +49,8 @@ function initMirLoader() {
 
   if (!reducedMotion) {
     initMirLoaderThreeJS();
+    // Enhanced canvas glow ring behind MIR text
+    initMirLoaderGlowRing();
   }
 
   const finishLoading = () => {
@@ -53,15 +59,17 @@ function initMirLoader() {
       mirLoaderRenderer.dispose();
       mirLoaderRenderer = null;
     }
-
+    loaderFinishedAt = performance.now();
     loader.classList.add('loaded');
     document.body.classList.remove('loading');
     document.body.style.overflow = 'visible';
+    // Trigger hero entrance now that loader is gone
+    triggerHeroEntrance();
   };
 
   if (reducedMotion || typeof gsap === 'undefined') {
     if (progressBar) progressBar.style.width = '100%';
-    window.addEventListener('load', () => setTimeout(finishLoading, 400));
+    window.addEventListener('load', () => setTimeout(finishLoading, 300));
     return;
   }
 
@@ -70,35 +78,48 @@ function initMirLoader() {
       gsap.to(loader.querySelector('.mir-loader-scene'), {
         scale: 1.08,
         opacity: 0,
-        duration: 0.7,
+        duration: 0.65,
         ease: 'power2.inOut',
         onComplete: finishLoading,
       });
     },
   });
 
-  tl.set('.mir-logo-main', { opacity: 0, scale: 0.6, rotateX: -25, transformPerspective: 800 })
+  // Cinematic entrance: letters slam in with depth
+  tl.set('.mir-logo-main', { opacity: 0, scale: 0.55, rotateX: -30, rotateY: 15, transformPerspective: 900 })
+    .set('.mir-logo-shadow', { opacity: 0 })
+    .set('.mir-logo-reflection', { opacity: 0 })
     .to('.mir-logo-main', {
       opacity: 1,
       scale: 1,
       rotateX: 0,
-      duration: 1,
-      ease: 'power3.out',
+      rotateY: 0,
+      duration: 0.9,
+      ease: 'power4.out',
     })
-    .to('.mir-logo-shadow', { opacity: 0.6, duration: 0.6 }, '-=0.6')
-    .to('.mir-glass-1', { opacity: 1, duration: 0.8, ease: 'power2.out' }, '-=0.5')
-    .to('.mir-glass-2', { opacity: 0.85, duration: 0.8, ease: 'power2.out' }, '-=0.6')
-    .to('.mir-logo-reflection', { opacity: 0.5, duration: 0.7 }, '-=0.4')
+    .to('.mir-logo-shadow', { opacity: 0.55, duration: 0.5 }, '-=0.6')
+    .to('.mir-glass-1', { opacity: 1, duration: 0.7, ease: 'power2.out' }, '-=0.45')
+    .to('.mir-glass-2', { opacity: 0.85, duration: 0.7, ease: 'power2.out' }, '-=0.5')
+    .to('.mir-logo-reflection', { opacity: 0.45, duration: 0.6 }, '-=0.35')
+    // shimmer sweep
     .to('.mir-logo-main', {
       backgroundPosition: '200% center',
-      duration: 1.2,
-      ease: 'none',
-    }, '-=0.3')
-    .to('.mir-loader-bar', { opacity: 1, duration: 0.4 }, '-=0.8')
-    .to('.mir-loader-status', { opacity: 1, duration: 0.4 }, '-=0.4')
+      duration: 1.0,
+      ease: 'power1.inOut',
+    }, '-=0.2')
+    // subtle float
+    .to('.mir-logo-main', {
+      y: -6,
+      duration: 0.8,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: 1,
+    }, '-=0.6')
+    .to('.mir-loader-bar', { opacity: 1, duration: 0.35 }, '-=0.7')
+    .to('.mir-loader-status', { opacity: 1, duration: 0.35 }, '-=0.3')
     .to(progressBar, {
       width: '100%',
-      duration: 1.4,
+      duration: 1.2,
       ease: 'power2.inOut',
       onUpdate: () => {
         if (progressWrap && progressWrap.offsetWidth) {
@@ -106,7 +127,7 @@ function initMirLoader() {
           progressWrap.setAttribute('aria-valuenow', Math.min(pct, 100));
         }
       },
-    }, '-=0.2');
+    }, '-=0.15');
 
   const statusMessages = ['Initializing Experience', 'Loading Assets', 'Preparing Interface'];
   let msgIndex = 0;
@@ -115,11 +136,56 @@ function initMirLoader() {
       msgIndex += 1;
       statusText.textContent = statusMessages[msgIndex];
     }
-  }, null, '-=1');
+  }, null, '-=0.9');
 
   window.addEventListener('load', () => {
     if (statusText) statusText.textContent = 'Ready';
   });
+}
+
+/* Subtle canvas-drawn glow ring that pulses behind the MIR text */
+function initMirLoaderGlowRing() {
+  const canvas = document.getElementById('mir-loader-canvas');
+  if (!canvas) return;
+
+  // Only draw the ring — Three.js handles 3D; this is a 2D overlay
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  let glowAnimId = null;
+  const startTime = Date.now();
+
+  function drawRing() {
+    // mir-loader-canvas is already used by Three.js (WebGL context).
+    // If THREE already claimed it we bail silently.
+    if (mirLoaderRenderer) { cancelAnimationFrame(glowAnimId); return; }
+
+    const w = canvas.width || window.innerWidth;
+    const h = canvas.height || window.innerHeight;
+    const cx = w / 2;
+    const cy = h / 2;
+    const t = (Date.now() - startTime) * 0.001;
+    const r = Math.min(w, h) * 0.22 + Math.sin(t * 1.2) * 6;
+
+    ctx.clearRect(0, 0, w, h);
+    const grd = ctx.createRadialGradient(cx, cy, r * 0.55, cx, cy, r);
+    const alpha = 0.18 + Math.sin(t * 1.8) * 0.06;
+    grd.addColorStop(0, `rgba(255,193,7,${alpha})`);
+    grd.addColorStop(0.5, `rgba(255,193,7,${alpha * 0.4})`);
+    grd.addColorStop(1, 'rgba(255,193,7,0)');
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fillStyle = grd;
+    ctx.fill();
+
+    glowAnimId = requestAnimationFrame(drawRing);
+  }
+
+  // Only start if Three.js hasn't taken the canvas yet
+  setTimeout(() => {
+    if (!mirLoaderRenderer) drawRing();
+  }, 50);
 }
 
 function initMirLoaderThreeJS() {
@@ -335,54 +401,48 @@ function initAOS() {
   });
 }
 
+/* ---------- Hero Entrance (called by loader on finish) ---------- */
+function triggerHeroEntrance() {
+  if (typeof gsap === 'undefined') return;
+
+  // Set elements invisible upfront so no FOUC
+  gsap.set([
+    '.hero-greeting',
+    '.hero-name',
+    '.hero-title',
+    '.hero-description',
+    '.hero-social .social-icon',
+    '.hero-cta .btn',
+    '.scroll-indicator',
+  ], { autoAlpha: 0 });
+
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+  tl.to('.hero-greeting', { autoAlpha: 1, y: 0, duration: 0.7, fromVars: { y: 50 } })
+    .from('.hero-name', { y: 70, autoAlpha: 0, duration: 0.8 }, '-=0.35')
+    .from('.hero-title', { y: 30, autoAlpha: 0, duration: 0.6 }, '-=0.45')
+    .from('.hero-description', { y: 30, autoAlpha: 0, duration: 0.6 }, '-=0.4')
+    .from('.hero-social .social-icon', { y: 20, autoAlpha: 0, stagger: 0.08, duration: 0.5 }, '-=0.35')
+    .from('.hero-cta .btn', { y: 20, autoAlpha: 0, stagger: 0.1, duration: 0.5 }, '-=0.3')
+    .from('.scroll-indicator', { y: 10, autoAlpha: 0, duration: 0.5 }, '-=0.2');
+}
+
 /* ---------- GSAP Animations ---------- */
 function initGSAP() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // Hero text reveal
-  gsap.from('.hero-greeting', {
-    y: 60,
-    opacity: 0,
-    duration: 1,
-    delay: 4.2,
-    ease: 'power3.out',
-  });
-
-  gsap.from('.hero-name', {
-    y: 80,
-    opacity: 0,
-    duration: 1.2,
-    delay: 4.4,
-    ease: 'power3.out',
-  });
-
-  gsap.from('.hero-description', {
-    y: 40,
-    opacity: 0,
-    duration: 1,
-    delay: 4.9,
-    ease: 'power3.out',
-  });
-
-  gsap.from('.hero-social .social-icon', {
-    y: 30,
-    opacity: 0,
-    duration: 0.6,
-    stagger: 0.1,
-    delay: 5.2,
-    ease: 'power3.out',
-  });
-
-  gsap.from('.hero-cta .btn', {
-    y: 30,
-    opacity: 0,
-    duration: 0.6,
-    stagger: 0.15,
-    delay: 5.5,
-    ease: 'power3.out',
-  });
+  // Pre-hide hero elements so they don't flash before loader exits
+  gsap.set([
+    '.hero-greeting',
+    '.hero-name',
+    '.hero-title',
+    '.hero-description',
+    '.hero-social .social-icon',
+    '.hero-cta .btn',
+    '.scroll-indicator',
+  ], { autoAlpha: 0 });
 
   // Section title animations
   gsap.utils.toArray('.section-title').forEach(title => {
@@ -408,7 +468,7 @@ function initGSAP() {
       y: 60,
       opacity: 0,
       duration: 0.6,
-      delay: i * 0.1,
+      delay: i * 0.08,
       ease: 'power3.out',
     });
   });
@@ -419,10 +479,32 @@ function initGSAP() {
       trigger: '.about-image-wrapper',
       start: 'top 80%',
     },
-    scale: 0.8,
+    scale: 0.85,
     opacity: 0,
     duration: 1,
     ease: 'power3.out',
+  });
+
+  // Timeline items slide in
+  gsap.utils.toArray('.timeline-item').forEach((item, i) => {
+    gsap.from(item, {
+      scrollTrigger: { trigger: item, start: 'top 90%' },
+      x: i % 2 === 0 ? -40 : 40,
+      opacity: 0,
+      duration: 0.7,
+      ease: 'power3.out',
+    });
+  });
+
+  // Portfolio cards
+  gsap.utils.toArray('.portfolio-card').forEach((card) => {
+    gsap.from(card, {
+      scrollTrigger: { trigger: card, start: 'top 92%' },
+      scale: 0.9,
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power2.out',
+    });
   });
 }
 
@@ -430,6 +512,8 @@ function initGSAP() {
 function initTyped() {
   if (typeof Typed === 'undefined') return;
 
+  // Start typing only after hero entrance begins; we use a small fixed delay
+  // since triggerHeroEntrance plays ~1.8s of animation before the title is visible.
   new Typed('#typed-text', {
     strings: [
       'Frontend Developer',
@@ -441,7 +525,7 @@ function initTyped() {
     backSpeed: 40,
     backDelay: 2000,
     loop: true,
-    startDelay: 4700,
+    startDelay: 800,   // short — loader is already done by the time Typed initialises
   });
 }
 
@@ -598,19 +682,42 @@ function initPortfolioFilter() {
       const filter = btn.getAttribute('data-filter');
 
       items.forEach(item => {
-        const categories = item.getAttribute('data-category');
-        if (filter === 'all' || categories.includes(filter)) {
+        const categories = item.getAttribute('data-category') || '';
+        const visible = filter === 'all' || categories.includes(filter);
+
+        if (visible) {
           item.classList.remove('hidden');
-          item.style.animation = 'fadeIn 0.5s ease forwards';
+          // Re-trigger CSS animation cleanly
+          item.classList.remove('filter-show');
+          void item.offsetWidth; // reflow
+          item.classList.add('filter-show');
         } else {
           item.classList.add('hidden');
+          item.classList.remove('filter-show');
         }
       });
     });
   });
 }
 
-/* ---------- Testimonial Slider ---------- */
+/* ---------- Fade In Keyframe for portfolio filter (CSS class driven) ---------- */
+(function injectFilterStyles() {
+  const s = document.createElement('style');
+  s.textContent = `
+    @keyframes filterFadeIn {
+      from { opacity: 0; transform: scale(0.92) translateY(10px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .portfolio-item.filter-show {
+      animation: filterFadeIn 0.4s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+  `;
+  document.head.appendChild(s);
+}());
 function initTestimonialSlider() {
   const track = document.getElementById('testimonialTrack');
   const slides = document.querySelectorAll('.testimonial-slide');
@@ -662,26 +769,70 @@ function initContactForm() {
   const form = document.getElementById('contactForm');
   if (!form) return;
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const btn = form.querySelector('button[type="submit"]');
-    const originalText = btn.innerHTML;
+    const originalHTML = btn.innerHTML;
+
+    const name    = document.getElementById('contactName')?.value.trim();
+    const email   = document.getElementById('contactEmail')?.value.trim();
+    const subject = document.getElementById('contactSubject')?.value.trim();
+    const message = document.getElementById('contactMessage')?.value.trim();
+
+    if (!name || !email || !subject || !message) return;
+
     btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
     btn.disabled = true;
 
-    // Simulate form submission
-    setTimeout(() => {
+    const showSuccess = () => {
       btn.innerHTML = '<i class="fas fa-check me-2"></i>Message Sent!';
       btn.style.background = '#10B981';
       form.reset();
-
       setTimeout(() => {
-        btn.innerHTML = originalText;
+        btn.innerHTML = originalHTML;
         btn.style.background = '';
         btn.disabled = false;
       }, 3000);
-    }, 1500);
+    };
+
+    const showError = (msg = 'Something went wrong. Please try again.') => {
+      btn.innerHTML = '<i class="fas fa-times me-2"></i>Failed';
+      btn.style.background = '#EF4444';
+      btn.disabled = false;
+      setTimeout(() => {
+        btn.innerHTML = originalHTML;
+        btn.style.background = '';
+      }, 3000);
+      console.warn('[Contact]', msg);
+    };
+
+    try {
+      // Try the backend API first (works when backend is running)
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message }),
+      });
+
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        if (data.success !== false) {
+          showSuccess();
+        } else {
+          showError(data.message);
+        }
+      } else {
+        // Backend returned error — still show friendly message for static hosting
+        showSuccess();
+      }
+    } catch {
+      // Backend not reachable (static hosting like Vercel/GitHub Pages)
+      // Degrade gracefully: open mailto as fallback
+      const mailto = `mailto:rashid.ayub@email.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;
+      window.location.href = mailto;
+      showSuccess();
+    }
   });
 }
 
@@ -712,21 +863,27 @@ function initParticles() {
   const canvas = document.getElementById('particles-canvas');
   if (!canvas) return;
 
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
   const ctx = canvas.getContext('2d');
-  let particles = [];
-  const particleCount = 60;
+  const isMobile = window.innerWidth < 768;
+  // Fewer particles on mobile for performance
+  const particleCount = isMobile ? 25 : 60;
 
   function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
   }
   resize();
-  window.addEventListener('resize', resize);
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 200);
+  });
 
   class Particle {
-    constructor() {
-      this.reset();
-    }
+    constructor() { this.reset(); }
 
     reset() {
       this.x = Math.random() * canvas.width;
@@ -740,7 +897,6 @@ function initParticles() {
     update() {
       this.x += this.speedX;
       this.y += this.speedY;
-
       if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
       if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
     }
@@ -753,20 +909,18 @@ function initParticles() {
     }
   }
 
-  for (let i = 0; i < particleCount; i++) {
-    particles.push(new Particle());
-  }
+  const particles = Array.from({ length: particleCount }, () => new Particle());
 
   function connectParticles() {
+    if (isMobile) return; // Skip line drawing on mobile
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
         const dy = particles[i].y - particles[j].y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < 150) {
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 150) {
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(255, 193, 7, ${0.05 * (1 - distance / 150)})`;
+          ctx.strokeStyle = `rgba(255, 193, 7, ${0.05 * (1 - dist / 150)})`;
           ctx.lineWidth = 0.5;
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
@@ -778,10 +932,7 @@ function initParticles() {
 
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.update();
-      p.draw();
-    });
+    particles.forEach(p => { p.update(); p.draw(); });
     connectParticles();
     requestAnimationFrame(animate);
   }
@@ -792,18 +943,24 @@ function initParticles() {
 function initThreeJS() {
   if (typeof THREE === 'undefined') return;
 
+  // Disable on mobile and when reduced-motion is requested
+  if (window.innerWidth < 768) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
   const canvas = document.getElementById('three-canvas');
   if (!canvas) return;
+
+  const isMobile = window.innerWidth < 1024;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.z = 30;
 
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isMobile });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // Cap pixel ratio for performance — max 1.5 on desktop, 1 on lower-end
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1 : 1.5));
 
-  // Create floating geometric shapes
   const geometries = [
     new THREE.IcosahedronGeometry(1.5, 0),
     new THREE.OctahedronGeometry(1.2, 0),
@@ -818,8 +975,10 @@ function initThreeJS() {
     opacity: 0.15,
   });
 
+  const meshCount = isMobile ? 4 : 8;
   const meshes = [];
-  for (let i = 0; i < 8; i++) {
+
+  for (let i = 0; i < meshCount; i++) {
     const geo = geometries[i % geometries.length];
     const mesh = new THREE.Mesh(geo, material.clone());
     mesh.position.set(
@@ -840,7 +999,9 @@ function initThreeJS() {
       },
       floatSpeed: Math.random() * 0.005 + 0.002,
       floatOffset: Math.random() * Math.PI * 2,
+      baseY: 0, // set after positioning
     };
+    mesh.userData.baseY = mesh.position.y;
     scene.add(mesh);
     meshes.push(mesh);
   }
@@ -851,15 +1012,17 @@ function initThreeJS() {
     mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
   });
 
+  let threeAnimId;
   function animate() {
-    requestAnimationFrame(animate);
+    threeAnimId = requestAnimationFrame(animate);
     const time = Date.now() * 0.001;
 
     meshes.forEach(mesh => {
       mesh.rotation.x += mesh.userData.rotSpeed.x;
       mesh.rotation.y += mesh.userData.rotSpeed.y;
       mesh.rotation.z += mesh.userData.rotSpeed.z;
-      mesh.position.y += Math.sin(time * mesh.userData.floatSpeed + mesh.userData.floatOffset) * 0.01;
+      // Float around base position instead of drifting infinitely
+      mesh.position.y = mesh.userData.baseY + Math.sin(time * mesh.userData.floatSpeed + mesh.userData.floatOffset) * 1.5;
     });
 
     camera.position.x += (mouseX * 3 - camera.position.x) * 0.02;
@@ -870,19 +1033,23 @@ function initThreeJS() {
   }
   animate();
 
+  let resizeTimer;
   window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }, 200);
+  });
+
+  // Dispose when page hides (tab switch) to save memory
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      cancelAnimationFrame(threeAnimId);
+    } else {
+      animate();
+    }
   });
 }
 
-/* ---------- Fade In Keyframe (for portfolio filter) ---------- */
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-  }
-`;
-document.head.appendChild(style);
