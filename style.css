@@ -1532,9 +1532,91 @@ body.loading {
   }
 }
 
+/* ---------- WhatsApp Floating Button ---------- */
+.whatsapp-float {
+  position: fixed;
+  bottom: 92px;          /* sits above back-to-top (30px + 50px btn + 12px gap) */
+  right: 28px;
+  z-index: 998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #25D366;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+  text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Slide-in on load */
+  animation: waFloat 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s both;
+}
+
+.whatsapp-float:hover {
+  transform: translateY(-4px) scale(1.08);
+  box-shadow: 0 8px 30px rgba(37, 211, 102, 0.6);
+}
+
+.whatsapp-float:focus-visible {
+  outline: 3px solid #25D366;
+  outline-offset: 4px;
+}
+
+.whatsapp-float__icon {
+  font-size: 1.7rem;
+  color: #ffffff;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* Subtle pulsing ring */
+.whatsapp-float__pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(37, 211, 102, 0.6);
+  animation: waPulse 2.4s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes waFloat {
+  from { opacity: 0; transform: translateY(20px) scale(0.8); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes waPulse {
+  0%   { transform: scale(1);    opacity: 0.7; }
+  70%  { transform: scale(1.55); opacity: 0;   }
+  100% { transform: scale(1.55); opacity: 0;   }
+}
+
+@media (max-width: 767px) {
+  .whatsapp-float {
+    width: 46px;
+    height: 46px;
+    bottom: 85px;
+    right: 16px;
+  }
+
+  .whatsapp-float__icon {
+    font-size: 1.45rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .whatsapp-float {
+    width: 42px;
+    height: 42px;
+    bottom: 80px;
+    right: 12px;
+  }
+}
+
 /* ---------- Print Styles ---------- */
 @media print {
-  .navbar, .back-to-top, #page-loader, .cursor-dot, .cursor-outline,
+  .navbar, .back-to-top, .whatsapp-float, #page-loader, .cursor-dot, .cursor-outline,
   #particles-canvas, #three-canvas, .scroll-progress {
     display: none !important;
   }
