@@ -19,7 +19,6 @@ Deploy on [Vercel](https://vercel.com) for a live preview.
 - Counter animations
 - Scroll progress indicator
 - Premium MIR 3D loader with glassmorphism
-- Developer dashboard (`dashboard.html`)
 - Glassmorphism UI
 - Portfolio filter gallery
 - Testimonial slider

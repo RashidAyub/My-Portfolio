@@ -807,32 +807,10 @@ function initContactForm() {
       console.warn('[Contact]', msg);
     };
 
-    try {
-      // Try the backend API first (works when backend is running)
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, subject, message }),
-      });
-
-      if (res.ok) {
-        const data = await res.json().catch(() => ({}));
-        if (data.success !== false) {
-          showSuccess();
-        } else {
-          showError(data.message);
-        }
-      } else {
-        // Backend returned error — still show friendly message for static hosting
-        showSuccess();
-      }
-    } catch {
-      // Backend not reachable (static hosting like Vercel/GitHub Pages)
-      // Degrade gracefully: open mailto as fallback
-      const mailto = `mailto:rashid.ayub@email.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;
-      window.location.href = mailto;
-      showSuccess();
-    }
+    // Client-side contact action (open mailto fallback)
+    const mailto = `mailto:rashid.ayub@email.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;
+    window.location.href = mailto;
+    showSuccess();
   });
 }
 
