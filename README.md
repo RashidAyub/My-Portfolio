@@ -55,7 +55,7 @@ Deploy on [Vercel](https://vercel.com) for a live preview.
 
 All personal information is easily editable in `index.html`:
 
-- **Profile Photo**: Replace `images/profile.png` with your own photo
+- **Profile Photo**: Replace `images/Rashid.jpg` with your own photo
 - **Personal Info**: Update the About section details (birthday, phone, email, etc.)
 - **Social Links**: Update GitHub, LinkedIn, Facebook, Instagram URLs
 - **Portfolio Projects**: Add your own projects in the Portfolio section
@@ -82,7 +82,7 @@ My-Portfolio/
 ├── vercel.json
 ├── README.md
 ├── images/
-│   └── profile.png
+│   └── Rashid.jpg
 ├── assets/
 └── fonts/
 ```
