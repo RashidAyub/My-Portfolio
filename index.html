@@ -5,9 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
-    content="Rashid Ayub is a Frontend Developer specialising in modern, responsive and interactive web experiences using React, JavaScript and Tailwind CSS.">
+    content="Rashid Ayub is a Frontend Developer specialising in modern, responsive and interactive web experiences using React, JavaScript, GSAP and Tailwind CSS.">
   <meta name="keywords"
-    content="Rashid Ayub, Frontend Developer, React, JavaScript, Portfolio, Web Developer, Tailwind CSS, UI Developer">
+    content="Rashid Ayub, Frontend Developer, React, JavaScript, Portfolio, Web Developer, Tailwind CSS, UI Developer, GSAP Animations, Web Design">
   <meta name="author" content="Rashid Ayub">
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#0B1120">
@@ -32,7 +32,7 @@
     content="Rashid Ayub is a Frontend Developer specialising in modern, responsive and interactive web experiences.">
   <meta name="twitter:image" content="https://rashidayub.vercel.app/images/profile.png">
 
-  <title>Rashid Ayub | Frontend Developer</title>
+  <title>Rashid Ayub | Frontend Developer & UI Specialist</title>
 
   <!-- Favicon -->
   <link rel="icon"
@@ -41,7 +41,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
     rel="stylesheet">
 
   <!-- Bootstrap 5 -->
@@ -49,9 +49,6 @@
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-  <!-- AOS -->
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css">
@@ -81,38 +78,44 @@
   </div>
 
   <!-- ========== CUSTOM CURSOR ========== -->
-  <div class="cursor-dot"></div>
-  <div class="cursor-outline"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-outline" aria-hidden="true"></div>
 
   <!-- ========== SCROLL PROGRESS ========== -->
-  <div class="scroll-progress"></div>
+  <div class="scroll-progress" aria-hidden="true"></div>
 
   <!-- ========== PARTICLE BACKGROUND ========== -->
-  <canvas id="particles-canvas"></canvas>
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
 
   <!-- ========== THREE.JS CANVAS ========== -->
-  <canvas id="three-canvas"></canvas>
+  <canvas id="three-canvas" aria-hidden="true"></canvas>
 
   <!-- ========== NAVBAR ========== -->
-  <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+  <nav class="navbar navbar-expand-lg fixed-top" id="mainNav" aria-label="Main Navigation">
     <div class="container">
-      <a class="navbar-brand" href="#home">
+      <a class="navbar-brand" href="#home" aria-label="Rashid Ayub Home">
         <div class="logo-circle">RA</div>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+      
+      <!-- Mobile Toggle Button -->
+      <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" id="navbarTogglerBtn">
+        <span class="toggler-bar"></span>
+        <span class="toggler-bar"></span>
+        <span class="toggler-bar"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto align-items-lg-center">
           <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
           <li class="nav-item"><a class="nav-link" href="#resume">Resume</a></li>
           <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
-          <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
           <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
+          <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#testimonials">Reviews</a></li>
           <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-          <li class="nav-item ms-lg-3">
+          <li class="nav-item ms-lg-3 theme-toggle-item">
             <button class="theme-toggle magnetic-btn" id="themeToggle" aria-label="Toggle theme">
               <i class="fas fa-moon"></i>
             </button>
@@ -127,42 +130,45 @@
     <div class="hero-overlay"></div>
     <div class="container h-100">
       <div class="row h-100 align-items-center justify-content-center">
-        <div class="col-lg-10 text-center">
-          <p class="hero-greeting reveal-text" data-aos="fade-up">Hi, I am</p>
-          <h1 class="hero-name reveal-text" data-aos="fade-up" data-aos-delay="100">
-            <span class="text-gold">Rashid Ayub</span>
+        <div class="col-lg-10 text-center hero-content-wrapper">
+          <div class="hero-tag-badge">
+            <span class="hero-status-dot"></span> Available for Freelance & Full-time
+          </div>
+          <p class="hero-greeting">Hi, I am</p>
+          <h1 class="hero-name">
+            <span class="text-gold hero-name-text">Rashid Ayub</span>
           </h1>
           <h2 class="hero-title">
             <span id="typed-text"></span><span class="typed-cursor">|</span>
           </h2>
-          <p class="hero-description" data-aos="fade-up" data-aos-delay="300">
-            I build modern, responsive and high-performance websites using HTML, CSS, JavaScript, React, Tailwind CSS
-            and modern frontend technologies.
+          <p class="hero-description">
+            I craft modern, responsive and high-performance digital experiences using HTML, CSS, JavaScript, React, Tailwind CSS
+            and cutting-edge frontend architecture.
           </p>
-          <div class="hero-social" data-aos="fade-up" data-aos-delay="400">
+          <div class="hero-social">
             <a href="https://github.com/RashidAyub" target="_blank" rel="noopener noreferrer"
-              class="social-icon magnetic-btn" aria-label="GitHub">
+              class="social-icon magnetic-btn" aria-label="GitHub Profile">
               <i class="fab fa-github"></i>
             </a>
             <a href="https://www.linkedin.com/in/rashid-ayub-8284b4299" target="_blank" rel="noopener noreferrer"
-              class="social-icon magnetic-btn" aria-label="LinkedIn">
+              class="social-icon magnetic-btn" aria-label="LinkedIn Profile">
               <i class="fab fa-linkedin-in"></i>
             </a>
             <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn"
-              aria-label="Facebook">
+              aria-label="Facebook Profile">
               <i class="fab fa-facebook-f"></i>
             </a>
             <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn"
-              aria-label="Instagram">
+              aria-label="Instagram Profile">
               <i class="fab fa-instagram"></i>
             </a>
-            <a href="mailto:rashidayub9404@email.com" class="social-icon magnetic-btn" aria-label="Email">
+            <a href="mailto:rashidayub9404@email.com" class="social-icon magnetic-btn" aria-label="Email Me">
               <i class="fas fa-envelope"></i>
             </a>
           </div>
-          <div class="hero-cta" data-aos="fade-up" data-aos-delay="500">
-            <a href="#contact" class="btn btn-gold magnetic-btn">Hire Me</a>
-            <a href="#portfolio" class="btn btn-outline-gold magnetic-btn">View Work</a>
+          <div class="hero-cta">
+            <a href="#contact" class="btn btn-gold magnetic-btn">Hire Me <i class="fas fa-arrow-right ms-2"></i></a>
+            <a href="#portfolio" class="btn btn-outline-gold magnetic-btn">View Work <i class="fas fa-eye ms-2"></i></a>
           </div>
         </div>
       </div>
@@ -178,19 +184,19 @@
   <!-- ========== ABOUT SECTION ========== -->
   <section id="about" class="section-padding">
     <div class="container">
-      <div class="section-header text-center" data-aos="fade-up">
+      <div class="section-header text-center gsap-reveal">
         <span class="section-tag">About Me</span>
         <h2 class="section-title">Get To Know <span class="text-gold">Me</span></h2>
       </div>
       <div class="row align-items-center g-5 mt-4">
         <!-- Profile Image Placeholder -->
-        <div class="col-lg-5" data-aos="fade-right">
+        <div class="col-lg-5 gsap-reveal-left">
           <div class="about-image-wrapper profile-tilt-card" id="profileTiltCard">
             <div class="profile-glass-frame">
               <div class="profile-glow"></div>
               <div class="profile-reflection"></div>
               <div class="about-image-border"></div>
-              <img src="images/profile.png" alt="Rashid Ayub - Profile Photo" class="about-image" id="profileImage"
+              <img src="images/profile.png" alt="Rashid Ayub - Frontend Developer" class="about-image" id="profileImage"
                 loading="lazy" width="420" height="420">
             </div>
             <div class="about-image-badge">
@@ -200,12 +206,12 @@
           </div>
         </div>
         <!-- About Content -->
-        <div class="col-lg-7" data-aos="fade-left">
+        <div class="col-lg-7 gsap-reveal-right">
           <h3 class="about-heading">Hi There! I'm <span class="text-gold">Rashid Ayub</span></h3>
-          <p class="about-subheading">Frontend Developer</p>
+          <p class="about-subheading">Frontend Developer & UI Specialist</p>
           <p class="about-text">
             I am a passionate Frontend Developer with a strong focus on creating beautiful, intuitive, and
-            high-performance web experiences. With expertise in modern JavaScript frameworks and responsive design, I
+            high-performance web experiences. With expertise in modern JavaScript frameworks, CSS animations, and responsive design, I
             transform creative ideas into pixel-perfect, user-friendly digital products. I thrive on solving complex
             problems and delivering clean, maintainable code that exceeds client expectations.
           </p>
@@ -233,7 +239,7 @@
                 <i class="fas fa-envelope"></i>
                 <div>
                   <strong>Email</strong>
-                  <span>rashidayub9404@gmail.com</span>
+                  <span>rashidayub9404@email.com</span>
                 </div>
               </div>
             </div>
@@ -242,7 +248,7 @@
                 <i class="fas fa-map-marker-alt"></i>
                 <div>
                   <strong>Location</strong>
-                  <span>Pakistan</span>
+                  <span>Peshawar, Pakistan</span>
                 </div>
               </div>
             </div>
@@ -260,7 +266,7 @@
                 <i class="fas fa-language"></i>
                 <div>
                   <strong>Languages</strong>
-                  <span>English, Urdu,Pashto</span>
+                  <span>English, Urdu, Pashto</span>
                 </div>
               </div>
             </div>
@@ -283,62 +289,142 @@
               </div>
             </div>
           </div>
-          <a href="#" class="btn btn-gold magnetic-btn mt-4" download>
-            <i class="fas fa-download me-2"></i>Download CV
-          </a>
+          <div class="about-actions mt-4">
+            <a href="mailto:rashidayub9404@email.com" class="btn btn-gold magnetic-btn me-3">
+              <i class="fas fa-paper-plane me-2"></i>Contact Me
+            </a>
+            <a href="#portfolio" class="btn btn-outline-gold magnetic-btn">
+              <i class="fas fa-briefcase me-2"></i>Explore Projects
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESUME / TIMELINE SECTION ========== -->
+  <section id="resume" class="section-padding bg-section">
+    <div class="container">
+      <div class="section-header text-center gsap-reveal">
+        <span class="section-tag">My Journey</span>
+        <h2 class="section-title">Resume & <span class="text-gold">Timeline</span></h2>
+      </div>
+      <div class="row g-5 mt-4">
+        <!-- Education -->
+        <div class="col-lg-6 gsap-reveal-left">
+          <h3 class="timeline-heading"><i class="fas fa-graduation-cap"></i> Education</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">2022 - 2026</span>
+                <h4>Bachelor of Computer Science</h4>
+                <p class="timeline-place">University of Agriculture, Peshawar</p>
+                <p>Studied software engineering, data structures, algorithms, web engineering, and modern computer science fundamentals.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">2020 - 2022</span>
+                <h4>Intermediate (Computer Science)</h4>
+                <p class="timeline-place">Frontier College Peshawar</p>
+                <p>Completed intermediate education with core focus on computer science, mathematics, and analytical reasoning.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Experience -->
+        <div class="col-lg-6 gsap-reveal-right">
+          <h3 class="timeline-heading"><i class="fas fa-briefcase"></i> Experience</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">2025 - Present</span>
+                <h4>Frontend Developer</h4>
+                <p class="timeline-place">Freelance Projects</p>
+                <p>Building responsive websites, interactive client portals, and web applications for clients worldwide using React and modern frontend tools.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">2025 - 2026</span>
+                <h4>Frontend Developer Intern</h4>
+                <p class="timeline-place">itsawak</p>
+                <p>Assisted in developing modular UI components, resolving responsive layout bugs, and implementing modern interactive designs for client projects.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content glass-card">
+                <span class="timeline-date">2024</span>
+                <h4>Best Portfolio Award</h4>
+                <p class="timeline-place">University Project Showcase</p>
+                <p>Recognized for outstanding web development project demonstrating exceptional UI design, smooth micro-interactions, and clean code architecture.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ========== SERVICES SECTION ========== -->
-  <section id="services" class="section-padding bg-section">
+  <section id="services" class="section-padding">
     <div class="container">
-      <div class="section-header text-center" data-aos="fade-up">
+      <div class="section-header text-center gsap-reveal">
         <span class="section-tag">What I Do</span>
         <h2 class="section-title">My <span class="text-gold">Services</span></h2>
       </div>
-      <div class="row g-4 mt-4">
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <div class="service-card">
+      <div class="row g-4 mt-4 service-grid">
+        <div class="col-md-6 col-lg-4">
+          <div class="service-card glass-card">
             <div class="service-icon"><i class="fas fa-code"></i></div>
             <h4>Frontend Development</h4>
-            <p>Building robust, scalable frontend architectures with clean code and modern best practices.</p>
+            <p>Building robust, scalable frontend architectures with clean code, semantic structure, and modern performance best practices.</p>
+            <div class="service-card-glow"></div>
           </div>
         </div>
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <div class="service-card">
+        <div class="col-md-6 col-lg-4">
+          <div class="service-card glass-card">
             <div class="service-icon"><i class="fab fa-react"></i></div>
             <h4>React Development</h4>
-            <p>Creating dynamic, component-based applications with React.js for seamless user experiences.</p>
+            <p>Creating dynamic, component-based single page applications with React.js, modern hooks, and state management for seamless user experiences.</p>
+            <div class="service-card-glow"></div>
           </div>
         </div>
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
-          <div class="service-card">
+        <div class="col-md-6 col-lg-4">
+          <div class="service-card glass-card">
             <div class="service-icon"><i class="fas fa-mobile-alt"></i></div>
             <h4>Responsive Website Design</h4>
-            <p>Designing websites that look stunning and function flawlessly on every device and screen size.</p>
+            <p>Designing fluid websites that look stunning and function flawlessly across every mobile, tablet, laptop, and ultra-wide monitor.</p>
+            <div class="service-card-glow"></div>
           </div>
         </div>
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <div class="service-card">
+        <div class="col-md-6 col-lg-4">
+          <div class="service-card glass-card">
             <div class="service-icon"><i class="fas fa-rocket"></i></div>
             <h4>Landing Page Design</h4>
-            <p>Crafting high-converting landing pages that captivate visitors and drive meaningful action.</p>
+            <p>Crafting high-converting, aesthetic landing pages that captivate visitors, convey brand values, and drive user action.</p>
+            <div class="service-card-glow"></div>
           </div>
         </div>
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <div class="service-card">
+        <div class="col-md-6 col-lg-4">
+          <div class="service-card glass-card">
             <div class="service-icon"><i class="fas fa-paint-brush"></i></div>
-            <h4>UI Implementation</h4>
-            <p>Translating Figma and design mockups into pixel-perfect, interactive web interfaces.</p>
+            <h4>UI/UX Implementation</h4>
+            <p>Translating Figma, Adobe XD, and custom design mockups into pixel-perfect, highly responsive, and accessible web interfaces.</p>
+            <div class="service-card-glow"></div>
           </div>
         </div>
-        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
-          <div class="service-card">
+        <div class="col-md-6 col-lg-4">
+          <div class="service-card glass-card">
             <div class="service-icon"><i class="fas fa-tachometer-alt"></i></div>
             <h4>Website Optimization</h4>
-            <p>Optimizing performance, accessibility, and SEO to deliver lightning-fast web experiences.</p>
+            <p>Optimizing web vitals, asset delivery, accessibility, and SEO to deliver lightning-fast load times and smooth 60fps animations.</p>
+            <div class="service-card-glow"></div>
           </div>
         </div>
       </div>
@@ -346,17 +432,17 @@
   </section>
 
   <!-- ========== SKILLS SECTION ========== -->
-  <section id="skills" class="section-padding">
+  <section id="skills" class="section-padding bg-section">
     <div class="container">
-      <div class="section-header text-center" data-aos="fade-up">
+      <div class="section-header text-center gsap-reveal">
         <span class="section-tag">My Expertise</span>
         <h2 class="section-title">Technical <span class="text-gold">Skills</span></h2>
       </div>
-      <div class="row g-4 mt-4">
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-          <div class="skill-item">
+      <div class="row g-4 mt-4 skills-grid">
+        <div class="col-lg-6">
+          <div class="skill-item glass-card p-3">
             <div class="skill-header">
-              <span>HTML5</span>
+              <span><i class="fab fa-html5 text-gold me-2"></i>HTML5</span>
               <span class="skill-percent">95%</span>
             </div>
             <div class="skill-bar">
@@ -364,10 +450,10 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="150">
-          <div class="skill-item">
+        <div class="col-lg-6">
+          <div class="skill-item glass-card p-3">
             <div class="skill-header">
-              <span>CSS3</span>
+              <span><i class="fab fa-css3-alt text-gold me-2"></i>CSS3</span>
               <span class="skill-percent">92%</span>
             </div>
             <div class="skill-bar">
@@ -375,10 +461,10 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-          <div class="skill-item">
+        <div class="col-lg-6">
+          <div class="skill-item glass-card p-3">
             <div class="skill-header">
-              <span>JavaScript</span>
+              <span><i class="fab fa-js-square text-gold me-2"></i>JavaScript (ES6+)</span>
               <span class="skill-percent">88%</span>
             </div>
             <div class="skill-bar">
@@ -386,10 +472,10 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250">
-          <div class="skill-item">
+        <div class="col-lg-6">
+          <div class="skill-item glass-card p-3">
             <div class="skill-header">
-              <span>React.js</span>
+              <span><i class="fab fa-react text-gold me-2"></i>React.js</span>
               <span class="skill-percent">50%</span>
             </div>
             <div class="skill-bar">
@@ -397,10 +483,10 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
-          <div class="skill-item">
+        <div class="col-lg-6">
+          <div class="skill-item glass-card p-3">
             <div class="skill-header">
-              <span>Tailwind CSS</span>
+              <span><i class="fas fa-wind text-gold me-2"></i>Tailwind CSS</span>
               <span class="skill-percent">90%</span>
             </div>
             <div class="skill-bar">
@@ -408,10 +494,10 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="350">
-          <div class="skill-item">
+        <div class="col-lg-6">
+          <div class="skill-item glass-card p-3">
             <div class="skill-header">
-              <span>Bootstrap</span>
+              <span><i class="fab fa-bootstrap text-gold me-2"></i>Bootstrap 5</span>
               <span class="skill-percent">93%</span>
             </div>
             <div class="skill-bar">
@@ -419,10 +505,10 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
-          <div class="skill-item">
+        <div class="col-lg-6">
+          <div class="skill-item glass-card p-3">
             <div class="skill-header">
-              <span>Git & GitHub</span>
+              <span><i class="fab fa-git-alt text-gold me-2"></i>Git & GitHub</span>
               <span class="skill-percent">87%</span>
             </div>
             <div class="skill-bar">
@@ -430,10 +516,10 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="450">
-          <div class="skill-item">
+        <div class="col-lg-6">
+          <div class="skill-item glass-card p-3">
             <div class="skill-header">
-              <span>Responsive Design</span>
+              <span><i class="fas fa-laptop-code text-gold me-2"></i>Responsive Design</span>
               <span class="skill-percent">94%</span>
             </div>
             <div class="skill-bar">
@@ -441,10 +527,10 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="500">
-          <div class="skill-item">
+        <div class="col-lg-6">
+          <div class="skill-item glass-card p-3">
             <div class="skill-header">
-              <span>REST API</span>
+              <span><i class="fas fa-network-wired text-gold me-2"></i>REST APIs</span>
               <span class="skill-percent">50%</span>
             </div>
             <div class="skill-bar">
@@ -452,10 +538,10 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="550">
-          <div class="skill-item">
+        <div class="col-lg-6">
+          <div class="skill-item glass-card p-3">
             <div class="skill-header">
-              <span>UI/UX Implementation</span>
+              <span><i class="fas fa-layer-group text-gold me-2"></i>UI/UX Implementation</span>
               <span class="skill-percent">86%</span>
             </div>
             <div class="skill-bar">
@@ -467,215 +553,205 @@
     </div>
   </section>
 
-  <!-- ========== RESUME SECTION ========== -->
-  <section id="resume" class="section-padding bg-section">
-    <div class="container">
-      <div class="section-header text-center" data-aos="fade-up">
-        <span class="section-tag">My Journey</span>
-        <h2 class="section-title">Resume & <span class="text-gold">Timeline</span></h2>
-      </div>
-      <div class="row g-5 mt-4">
-        <!-- Education -->
-        <div class="col-lg-6" data-aos="fade-right">
-          <h3 class="timeline-heading"><i class="fas fa-graduation-cap"></i> Education</h3>
-          <div class="timeline">
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content glass-card">
-                <span class="timeline-date">2022 - 2026</span>
-                <h4>Bachelor of Computer Science</h4>
-                <p class="timeline-place">University of Augriculture, Peshawar</p>
-                <p>Studied software engineering, data structures, web development, and computer science fundamentals.
-                </p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content glass-card">
-                <span class="timeline-date">2020 - 2022</span>
-                <h4>Intermediate (Computer Science)</h4>
-                <p class="timeline-place">Frontier Collage Peshawar</p>
-                <p>Completed intermediate education with focus on computer science.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Experience -->
-        <div class="col-lg-6" data-aos="fade-left">
-          <h3 class="timeline-heading"><i class="fas fa-briefcase"></i> Experience</h3>
-          <div class="timeline">
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content glass-card">
-                <span class="timeline-date">2025 - Present</span>
-                <h4>Frontend Developer</h4>
-                <p class="timeline-place">Freelance Projects</p>
-                <p>Building responsive websites and web applications for clients worldwide using React and modern
-                  frontend tools.</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content glass-card">
-                <span class="timeline-date">2025 - 2026</span>
-                <h4>Frontend Developer Intern</h4>
-                <p class="timeline-place">itsawak</p>
-                <p>Assisted in developing UI components, fixing bugs, and implementing responsive designs for client
-                  projects.</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content glass-card">
-                <span class="timeline-date">2024</span>
-                <h4>Best Portfolio Award</h4>
-                <p class="timeline-place">University Project Showcase</p>
-                <p>Recognized for outstanding web development project demonstrating modern design and clean code
-                  practices.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ========== PORTFOLIO SECTION ========== -->
   <section id="portfolio" class="section-padding">
     <div class="container">
-      <div class="section-header text-center" data-aos="fade-up">
+      <div class="section-header text-center gsap-reveal">
         <span class="section-tag">My Work</span>
         <h2 class="section-title">Featured <span class="text-gold">Portfolio</span></h2>
       </div>
+
       <!-- Filter Buttons -->
-      <div class="portfolio-filters text-center mt-4" data-aos="fade-up">
-        <button class="filter-btn active magnetic-btn" data-filter="all">All</button>
-        <button class="filter-btn magnetic-btn" data-filter="websites">Websites</button>
-        <button class="filter-btn magnetic-btn" data-filter="react">React Projects</button>
-        <button class="filter-btn magnetic-btn" data-filter="javascript">JavaScript</button>
-        <button class="filter-btn magnetic-btn" data-filter="ui">UI Designs</button>
+      <div class="portfolio-filters text-center mt-4 gsap-reveal" role="tablist" aria-label="Portfolio Category Filters">
+        <button class="filter-btn active magnetic-btn" data-filter="all" role="tab" aria-selected="true">All</button>
+        <button class="filter-btn magnetic-btn" data-filter="websites" role="tab" aria-selected="false">Websites</button>
+        <button class="filter-btn magnetic-btn" data-filter="react" role="tab" aria-selected="false">React Projects</button>
+        <button class="filter-btn magnetic-btn" data-filter="javascript" role="tab" aria-selected="false">JavaScript</button>
+        <button class="filter-btn magnetic-btn" data-filter="ui" role="tab" aria-selected="false">UI Designs</button>
       </div>
+
       <!-- Portfolio Grid -->
-      <div class="row g-4 mt-4 portfolio-grid">
+      <div class="row g-4 mt-4 portfolio-grid" id="portfolioGrid">
+        
+        <!-- Project 1: E-Commerce Platform -->
         <div class="col-md-6 col-lg-4 portfolio-item" data-category="websites react">
-          <div class="portfolio-card" data-aos="zoom-in">
-            <div class="portfolio-image">
-              <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop"
-                alt="E-Commerce Website">
-              <div class="portfolio-overlay">
-                <div class="portfolio-info">
-                  <h4>E-Commerce Platform</h4>
-                  <span>Websites / React</span>
-                  <div class="portfolio-links">
-                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live
-                      Demo</a>
-                    <a href="https://github.com/RashidAyub" target="_blank" class="magnetic-btn"><i
-                        class="fab fa-github"></i> GitHub</a>
-                  </div>
-                </div>
+          <div class="portfolio-card glass-card">
+            <div class="portfolio-image-wrap">
+              <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=520&fit=crop"
+                alt="E-Commerce Platform Project Preview" class="portfolio-img" loading="lazy" width="400" height="260">
+              <div class="portfolio-badge">React & Web</div>
+            </div>
+            <div class="portfolio-content">
+              <h4 class="portfolio-title">E-Commerce Platform</h4>
+              <p class="portfolio-desc">
+                Modern responsive online storefront featuring interactive product catalogs, seamless cart management, and fluid UI.
+              </p>
+              <div class="portfolio-tags">
+                <span class="tech-tag">React</span>
+                <span class="tech-tag">JavaScript</span>
+                <span class="tech-tag">Tailwind CSS</span>
+              </div>
+              <div class="portfolio-card-links">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="btn-card-link demo-btn magnetic-btn" aria-label="Live Demo for E-Commerce Platform">
+                  <i class="fas fa-external-link-alt me-1"></i> Live Demo
+                </a>
+                <a href="https://github.com/RashidAyub" target="_blank" rel="noopener noreferrer" class="btn-card-link github-btn magnetic-btn" aria-label="GitHub Repository for E-Commerce Platform">
+                  <i class="fab fa-github me-1"></i> GitHub
+                </a>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Project 2: Task Manager App -->
         <div class="col-md-6 col-lg-4 portfolio-item" data-category="react javascript">
-          <div class="portfolio-card" data-aos="zoom-in" data-aos-delay="100">
-            <div class="portfolio-image">
-              <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop"
-                alt="Task Manager App">
-              <div class="portfolio-overlay">
-                <div class="portfolio-info">
-                  <h4>Task Manager App</h4>
-                  <span>React Projects</span>
-                  <div class="portfolio-links">
-                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live
-                      Demo</a>
-                    <a href="https://github.com/RashidAyub" target="_blank" class="magnetic-btn"><i
-                        class="fab fa-github"></i> GitHub</a>
-                  </div>
-                </div>
+          <div class="portfolio-card glass-card">
+            <div class="portfolio-image-wrap">
+              <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=520&fit=crop"
+                alt="Task Manager App Project Preview" class="portfolio-img" loading="lazy" width="400" height="260">
+              <div class="portfolio-badge">React App</div>
+            </div>
+            <div class="portfolio-content">
+              <h4 class="portfolio-title">Task Manager App</h4>
+              <p class="portfolio-desc">
+                Interactive productivity dashboard with task scheduling, drag-and-drop state management, and real-time filters.
+              </p>
+              <div class="portfolio-tags">
+                <span class="tech-tag">React</span>
+                <span class="tech-tag">JavaScript</span>
+                <span class="tech-tag">CSS3</span>
+              </div>
+              <div class="portfolio-card-links">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="btn-card-link demo-btn magnetic-btn" aria-label="Live Demo for Task Manager App">
+                  <i class="fas fa-external-link-alt me-1"></i> Live Demo
+                </a>
+                <a href="https://github.com/RashidAyub" target="_blank" rel="noopener noreferrer" class="btn-card-link github-btn magnetic-btn" aria-label="GitHub Repository for Task Manager App">
+                  <i class="fab fa-github me-1"></i> GitHub
+                </a>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Project 3: Agency Landing Page -->
         <div class="col-md-6 col-lg-4 portfolio-item" data-category="websites ui">
-          <div class="portfolio-card" data-aos="zoom-in" data-aos-delay="200">
-            <div class="portfolio-image">
-              <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=600&h=400&fit=crop"
-                alt="Agency Landing Page">
-              <div class="portfolio-overlay">
-                <div class="portfolio-info">
-                  <h4>Agency Landing Page</h4>
-                  <span>Websites / UI Designs</span>
-                  <div class="portfolio-links">
-                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live
-                      Demo</a>
-                    <a href="https://github.com/RashidAyub" target="_blank" class="magnetic-btn"><i
-                        class="fab fa-github"></i> GitHub</a>
-                  </div>
-                </div>
+          <div class="portfolio-card glass-card">
+            <div class="portfolio-image-wrap">
+              <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&h=520&fit=crop"
+                alt="Agency Landing Page Project Preview" class="portfolio-img" loading="lazy" width="400" height="260">
+              <div class="portfolio-badge">Agency UI</div>
+            </div>
+            <div class="portfolio-content">
+              <h4 class="portfolio-title">Agency Landing Page</h4>
+              <p class="portfolio-desc">
+                High-converting digital agency landing page with smooth scroll effects, modern typography, and dark glass aesthetic.
+              </p>
+              <div class="portfolio-tags">
+                <span class="tech-tag">HTML5</span>
+                <span class="tech-tag">GSAP</span>
+                <span class="tech-tag">CSS3</span>
+              </div>
+              <div class="portfolio-card-links">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="btn-card-link demo-btn magnetic-btn" aria-label="Live Demo for Agency Landing Page">
+                  <i class="fas fa-external-link-alt me-1"></i> Live Demo
+                </a>
+                <a href="https://github.com/RashidAyub" target="_blank" rel="noopener noreferrer" class="btn-card-link github-btn magnetic-btn" aria-label="GitHub Repository for Agency Landing Page">
+                  <i class="fab fa-github me-1"></i> GitHub
+                </a>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Project 4: Weather Dashboard -->
         <div class="col-md-6 col-lg-4 portfolio-item" data-category="javascript">
-          <div class="portfolio-card" data-aos="zoom-in">
-            <div class="portfolio-image">
-              <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=600&h=400&fit=crop"
-                alt="Weather Dashboard">
-              <div class="portfolio-overlay">
-                <div class="portfolio-info">
-                  <h4>Weather Dashboard</h4>
-                  <span>JavaScript</span>
-                  <div class="portfolio-links">
-                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live
-                      Demo</a>
-                    <a href="https://github.com/RashidAyub" target="_blank" class="magnetic-btn"><i
-                        class="fab fa-github"></i> GitHub</a>
-                  </div>
-                </div>
+          <div class="portfolio-card glass-card">
+            <div class="portfolio-image-wrap">
+              <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&h=520&fit=crop"
+                alt="Weather Dashboard Project Preview" class="portfolio-img" loading="lazy" width="400" height="260">
+              <div class="portfolio-badge">JavaScript</div>
+            </div>
+            <div class="portfolio-content">
+              <h4 class="portfolio-title">Weather Dashboard</h4>
+              <p class="portfolio-desc">
+                Live atmospheric weather application featuring real-time city search, dynamic temperature units, and forecasting.
+              </p>
+              <div class="portfolio-tags">
+                <span class="tech-tag">JavaScript</span>
+                <span class="tech-tag">REST API</span>
+                <span class="tech-tag">Bootstrap</span>
+              </div>
+              <div class="portfolio-card-links">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="btn-card-link demo-btn magnetic-btn" aria-label="Live Demo for Weather Dashboard">
+                  <i class="fas fa-external-link-alt me-1"></i> Live Demo
+                </a>
+                <a href="https://github.com/RashidAyub" target="_blank" rel="noopener noreferrer" class="btn-card-link github-btn magnetic-btn" aria-label="GitHub Repository for Weather Dashboard">
+                  <i class="fab fa-github me-1"></i> GitHub
+                </a>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Project 5: Finance Dashboard -->
         <div class="col-md-6 col-lg-4 portfolio-item" data-category="react ui">
-          <div class="portfolio-card" data-aos="zoom-in" data-aos-delay="100">
-            <div class="portfolio-image">
-              <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&h=400&fit=crop"
-                alt="Finance Dashboard">
-              <div class="portfolio-overlay">
-                <div class="portfolio-info">
-                  <h4>Finance Dashboard</h4>
-                  <span>React / UI Designs</span>
-                  <div class="portfolio-links">
-                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live
-                      Demo</a>
-                    <a href="https://github.com/RashidAyub" target="_blank" class="magnetic-btn"><i
-                        class="fab fa-github"></i> GitHub</a>
-                  </div>
-                </div>
+          <div class="portfolio-card glass-card">
+            <div class="portfolio-image-wrap">
+              <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&h=520&fit=crop"
+                alt="Finance Dashboard Project Preview" class="portfolio-img" loading="lazy" width="400" height="260">
+              <div class="portfolio-badge">Dashboard UI</div>
+            </div>
+            <div class="portfolio-content">
+              <h4 class="portfolio-title">Finance Dashboard</h4>
+              <p class="portfolio-desc">
+                Modern crypto & financial statistics dashboard featuring interactive charts, revenue analytics, and transaction streams.
+              </p>
+              <div class="portfolio-tags">
+                <span class="tech-tag">React</span>
+                <span class="tech-tag">UI Design</span>
+                <span class="tech-tag">Tailwind</span>
+              </div>
+              <div class="portfolio-card-links">
+                <a href="#" target="_blank" rel="noopener noreferrer" class="btn-card-link demo-btn magnetic-btn" aria-label="Live Demo for Finance Dashboard">
+                  <i class="fas fa-external-link-alt me-1"></i> Live Demo
+                </a>
+                <a href="https://github.com/RashidAyub" target="_blank" rel="noopener noreferrer" class="btn-card-link github-btn magnetic-btn" aria-label="GitHub Repository for Finance Dashboard">
+                  <i class="fab fa-github me-1"></i> GitHub
+                </a>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Project 6: Personal Portfolio -->
         <div class="col-md-6 col-lg-4 portfolio-item" data-category="websites">
-          <div class="portfolio-card" data-aos="zoom-in" data-aos-delay="200">
-            <div class="portfolio-image">
-              <img src="images/profile.png" alt="Personal Portfolio">
-              <div class="portfolio-overlay">
-                <div class="portfolio-info">
-                  <h4>Personal Portfolio</h4>
-                  <span>Websites</span>
-                  <div class="portfolio-links">
-                    <a href="#" target="_blank" class="magnetic-btn"><i class="fas fa-external-link-alt"></i> Live
-                      Demo</a>
-                    <a href="https://github.com/RashidAyub/My-Portfolio" target="_blank" class="magnetic-btn"><i
-                        class="fab fa-github"></i> GitHub</a>
-                  </div>
-                </div>
+          <div class="portfolio-card glass-card">
+            <div class="portfolio-image-wrap">
+              <img src="images/profile.png" alt="Personal Portfolio Project Preview" class="portfolio-img" loading="lazy" width="400" height="260">
+              <div class="portfolio-badge">Portfolio</div>
+            </div>
+            <div class="portfolio-content">
+              <h4 class="portfolio-title">Personal Portfolio</h4>
+              <p class="portfolio-desc">
+                High-end dark gold portfolio experience built with GSAP animations, 3D WebGL particle effects, and responsive layout.
+              </p>
+              <div class="portfolio-tags">
+                <span class="tech-tag">HTML5</span>
+                <span class="tech-tag">GSAP</span>
+                <span class="tech-tag">Three.js</span>
+              </div>
+              <div class="portfolio-card-links">
+                <a href="#home" class="btn-card-link demo-btn magnetic-btn" aria-label="Live Demo for Personal Portfolio">
+                  <i class="fas fa-external-link-alt me-1"></i> Live Demo
+                </a>
+                <a href="https://github.com/RashidAyub/My-Portfolio" target="_blank" rel="noopener noreferrer" class="btn-card-link github-btn magnetic-btn" aria-label="GitHub Repository for Personal Portfolio">
+                  <i class="fab fa-github me-1"></i> GitHub
+                </a>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
@@ -683,11 +759,11 @@
   <!-- ========== TESTIMONIALS SECTION ========== -->
   <section id="testimonials" class="section-padding bg-section">
     <div class="container">
-      <div class="section-header text-center" data-aos="fade-up">
+      <div class="section-header text-center gsap-reveal">
         <span class="section-tag">Testimonials</span>
         <h2 class="section-title">Client <span class="text-gold">Reviews</span></h2>
       </div>
-      <div class="testimonial-slider mt-5" data-aos="fade-up">
+      <div class="testimonial-slider mt-5 gsap-reveal">
         <div class="testimonial-track" id="testimonialTrack">
           <div class="testimonial-slide">
             <div class="testimonial-card glass-card">
@@ -742,10 +818,10 @@
           </div>
         </div>
         <div class="testimonial-nav">
-          <button class="testimonial-prev magnetic-btn" aria-label="Previous"><i
+          <button class="testimonial-prev magnetic-btn" aria-label="Previous Testimonial"><i
               class="fas fa-chevron-left"></i></button>
-          <div class="testimonial-dots"></div>
-          <button class="testimonial-next magnetic-btn" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+          <div class="testimonial-dots" role="tablist" aria-label="Testimonial slider pagination"></div>
+          <button class="testimonial-next magnetic-btn" aria-label="Next Testimonial"><i class="fas fa-chevron-right"></i></button>
         </div>
       </div>
     </div>
@@ -754,81 +830,97 @@
   <!-- ========== CONTACT SECTION ========== -->
   <section id="contact" class="section-padding">
     <div class="container">
-      <div class="section-header text-center" data-aos="fade-up">
+      <div class="section-header text-center gsap-reveal">
         <span class="section-tag">Get In Touch</span>
         <h2 class="section-title">Contact <span class="text-gold">Me</span></h2>
       </div>
       <div class="row g-5 mt-4">
         <!-- Contact Info -->
-        <div class="col-lg-5" data-aos="fade-right">
-          <div class="contact-info-wrapper">
+        <div class="col-lg-5 gsap-reveal-left">
+          <div class="contact-info-wrapper glass-card p-4 p-md-5">
             <h3>Contact Information</h3>
             <p>Feel free to reach out for collaborations, freelance projects, or just a friendly hello!</p>
+            
             <div class="contact-info-item">
               <div class="contact-icon"><i class="fas fa-phone"></i></div>
               <div>
                 <strong>Phone</strong>
-                <span>+92 300 1234567</span>
+                <span><a href="tel:+923109670892">+92 310 9670892</a></span>
               </div>
             </div>
+            
             <div class="contact-info-item">
               <div class="contact-icon"><i class="fas fa-envelope"></i></div>
               <div>
                 <strong>Email</strong>
-                <span>rashid.ayub@email.com</span>
+                <span><a href="mailto:rashidayub9404@email.com">rashidayub9404@email.com</a></span>
               </div>
             </div>
+            
             <div class="contact-info-item">
               <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
               <div>
                 <strong>Address</strong>
-                <span>Lahore, Pakistan</span>
+                <span>Peshawar, Khyber Pakhtunkhwa, Pakistan</span>
               </div>
             </div>
+
             <div class="contact-social mt-4">
-              <a href="https://github.com/RashidAyub" target="_blank" class="social-icon magnetic-btn"><i
-                  class="fab fa-github"></i></a>
-              <a href="https://www.linkedin.com/in/rashid-ayub-8284b4299" target="_blank"
-                class="social-icon magnetic-btn"><i class="fab fa-linkedin-in"></i></a>
-              <a href="https://facebook.com/" target="_blank" class="social-icon magnetic-btn"><i
-                  class="fab fa-facebook-f"></i></a>
-              <a href="https://instagram.com/" target="_blank" class="social-icon magnetic-btn"><i
-                  class="fab fa-instagram"></i></a>
+              <a href="https://github.com/RashidAyub" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="GitHub Profile">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="https://www.linkedin.com/in/rashid-ayub-8284b4299" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="LinkedIn Profile">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+              <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="Facebook Profile">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="Instagram Profile">
+                <i class="fab fa-instagram"></i>
+              </a>
             </div>
           </div>
         </div>
+
         <!-- Contact Form -->
-        <div class="col-lg-7" data-aos="fade-left">
-          <form class="contact-form glass-card" id="contactForm">
+        <div class="col-lg-7 gsap-reveal-right">
+          <form class="contact-form glass-card" id="contactForm" novalidate>
+            <!-- Form Alert Container -->
+            <div id="contactFormAlert" class="contact-form-alert" style="display: none;" role="alert"></div>
+
             <div class="row g-3">
               <div class="col-md-6">
                 <div class="form-floating">
-                  <input type="text" class="form-control" id="contactName" placeholder="Your Name" required>
+                  <input type="text" class="form-control" id="contactName" name="name" placeholder="Your Name" required>
                   <label for="contactName">Your Name</label>
+                  <div class="invalid-feedback">Please enter your name.</div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-floating">
-                  <input type="email" class="form-control" id="contactEmail" placeholder="Your Email" required>
+                  <input type="email" class="form-control" id="contactEmail" name="email" placeholder="Your Email" required>
                   <label for="contactEmail">Your Email</label>
+                  <div class="invalid-feedback">Please enter a valid email address.</div>
                 </div>
               </div>
               <div class="col-12">
                 <div class="form-floating">
-                  <input type="text" class="form-control" id="contactSubject" placeholder="Subject" required>
+                  <input type="text" class="form-control" id="contactSubject" name="subject" placeholder="Subject" required>
                   <label for="contactSubject">Subject</label>
+                  <div class="invalid-feedback">Please enter a subject.</div>
                 </div>
               </div>
               <div class="col-12">
                 <div class="form-floating">
-                  <textarea class="form-control" id="contactMessage" placeholder="Message" style="height: 150px"
+                  <textarea class="form-control" id="contactMessage" name="message" placeholder="Message" style="height: 150px"
                     required></textarea>
                   <label for="contactMessage">Message</label>
+                  <div class="invalid-feedback">Please enter your message (min 10 characters).</div>
                 </div>
               </div>
               <div class="col-12">
-                <button type="submit" class="btn btn-gold magnetic-btn w-100">
-                  <i class="fas fa-paper-plane me-2"></i>Send Message
+                <button type="submit" class="btn btn-gold magnetic-btn w-100" id="contactSubmitBtn">
+                  <span class="btn-text"><i class="fas fa-paper-plane me-2"></i>Send Message</span>
                 </button>
               </div>
             </div>
@@ -845,8 +937,7 @@
         <div class="col-lg-4">
           <div class="footer-brand">
             <div class="logo-circle">RA</div>
-            <p>Frontend Developer passionate about creating beautiful, high-performance web experiences that make a
-              lasting impact.</p>
+            <p>Frontend Developer passionate about crafting beautiful, high-performance, and intuitive digital experiences that make a lasting impact.</p>
           </div>
         </div>
         <div class="col-lg-4">
@@ -854,7 +945,9 @@
           <ul class="footer-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
+            <li><a href="#resume">Resume</a></li>
             <li><a href="#services">Services</a></li>
+            <li><a href="#skills">Skills</a></li>
             <li><a href="#portfolio">Portfolio</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
@@ -862,14 +955,18 @@
         <div class="col-lg-4">
           <h5>Follow Me</h5>
           <div class="footer-social">
-            <a href="https://github.com/RashidAyub" target="_blank" class="social-icon magnetic-btn"><i
-                class="fab fa-github"></i></a>
-            <a href="https://www.linkedin.com/in/rashid-ayub-8284b4299" target="_blank"
-              class="social-icon magnetic-btn"><i class="fab fa-linkedin-in"></i></a>
-            <a href="https://facebook.com/" target="_blank" class="social-icon magnetic-btn"><i
-                class="fab fa-facebook-f"></i></a>
-            <a href="https://instagram.com/" target="_blank" class="social-icon magnetic-btn"><i
-                class="fab fa-instagram"></i></a>
+            <a href="https://github.com/RashidAyub" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="GitHub Profile">
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/rashid-ayub-8284b4299" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="LinkedIn Profile">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="Facebook Profile">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="social-icon magnetic-btn" aria-label="Instagram Profile">
+              <i class="fab fa-instagram"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -888,14 +985,13 @@
   <!-- ========== WHATSAPP FLOATING BUTTON ========== -->
   <a class="whatsapp-float"
     href="https://wa.me/923109670892?text=Hello%2C%20I%20visited%20your%20MIR%20Portfolio%20website%20and%20would%20like%20to%20contact%20you."
-    target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" title="Chat on WhatsApp">
+    target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp" title="Chat on WhatsApp">
     <i class="fab fa-whatsapp whatsapp-float__icon"></i>
     <span class="whatsapp-float__pulse"></span>
   </a>
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
