@@ -29,6 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initProfileTilt();
 });
 
+/* Refresh ScrollTrigger after window load and font rendering */
+window.addEventListener('load', () => {
+  if (typeof ScrollTrigger !== 'undefined') {
+    ScrollTrigger.refresh();
+  }
+});
+
 /* ---------- MIR 3D Loader ---------- */
 function initMirLoader() {
   const loader = document.getElementById('page-loader');
@@ -56,24 +63,27 @@ function initMirLoader() {
     document.body.classList.remove('loading');
     document.body.style.overflow = 'visible';
 
-    // Trigger hero entrance after loader fades
+    // Trigger hero entrance and recalculate scroll triggers
     setTimeout(() => {
       triggerHeroEntrance();
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+      }
     }, 200);
   };
 
   if (reducedMotion || typeof gsap === 'undefined') {
     if (progressBar) progressBar.style.width = '100%';
-    window.addEventListener('load', () => setTimeout(finishLoading, 400));
+    window.addEventListener('load', () => setTimeout(finishLoading, 300));
     return;
   }
 
   const tl = gsap.timeline({
     onComplete: () => {
       gsap.to(loader.querySelector('.mir-loader-scene'), {
-        scale: 1.06,
+        scale: 1.05,
         opacity: 0,
-        duration: 0.6,
+        duration: 0.55,
         ease: 'power2.inOut',
         onComplete: finishLoading,
       });
@@ -366,7 +376,7 @@ function initLenis() {
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
-      if (href === '#') return;
+      if (href === '#' || !href.startsWith('#')) return;
       const target = document.querySelector(href);
       if (target) {
         e.preventDefault();
@@ -451,70 +461,90 @@ function initGSAPAnimations() {
 
   // 1. Section Header Reveals
   gsap.utils.toArray('.gsap-reveal').forEach((el) => {
-    gsap.from(el, {
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 88%',
-        toggleActions: 'play none none none',
-      },
-      y: 40,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(
+      el,
+      { y: 35, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.75,
+        ease: 'power3.out',
+        clearProps: 'transform',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 92%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
   });
 
   // 2. Left / Right Reveals
   gsap.utils.toArray('.gsap-reveal-left').forEach((el) => {
-    gsap.from(el, {
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 85%',
-        toggleActions: 'play none none none',
-      },
-      x: -50,
-      opacity: 0,
-      duration: 0.9,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(
+      el,
+      { x: -45, opacity: 0 },
+      {
+        x: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power3.out',
+        clearProps: 'transform',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 90%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
   });
 
   gsap.utils.toArray('.gsap-reveal-right').forEach((el) => {
-    gsap.from(el, {
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 85%',
-        toggleActions: 'play none none none',
-      },
-      x: 50,
-      opacity: 0,
-      duration: 0.9,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(
+      el,
+      { x: 45, opacity: 0 },
+      {
+        x: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power3.out',
+        clearProps: 'transform',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 90%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
   });
 
   // 3. Service Cards Stagger
-  const serviceCards = gsap.utils.toArray('.service-card');
-  if (serviceCards.length) {
-    gsap.from(serviceCards, {
-      scrollTrigger: {
-        trigger: '.service-grid',
-        start: 'top 85%',
-      },
-      y: 50,
-      opacity: 0,
-      duration: 0.7,
-      stagger: 0.1,
-      ease: 'power3.out',
-    });
-  }
+  gsap.utils.toArray('.service-card').forEach((card, i) => {
+    gsap.fromTo(
+      card,
+      { y: 40, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        delay: (i % 3) * 0.1,
+        ease: 'power3.out',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 92%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+  });
 
   // 4. Skills Progress & Counter Animation
   const skillItems = gsap.utils.toArray('.skill-item');
   if (skillItems.length) {
     ScrollTrigger.create({
       trigger: '.skills-grid',
-      start: 'top 85%',
+      start: 'top 90%',
       once: true,
       onEnter: () => {
         skillItems.forEach((item, index) => {
@@ -535,47 +565,58 @@ function initGSAPAnimations() {
 
   // 5. Timeline Items Slide-In
   gsap.utils.toArray('.timeline-item').forEach((item, i) => {
-    gsap.from(item, {
-      scrollTrigger: {
-        trigger: item,
-        start: 'top 90%',
-      },
-      x: i % 2 === 0 ? -30 : 30,
-      opacity: 0,
-      duration: 0.7,
-      ease: 'power3.out',
-    });
+    gsap.fromTo(
+      item,
+      { x: i % 2 === 0 ? -30 : 30, opacity: 0 },
+      {
+        x: 0,
+        opacity: 1,
+        duration: 0.7,
+        ease: 'power3.out',
+        clearProps: 'transform',
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 92%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
   });
 
   // 6. Portfolio Cards Stagger
-  const portfolioCards = gsap.utils.toArray('.portfolio-card');
-  if (portfolioCards.length) {
-    gsap.from(portfolioCards, {
-      scrollTrigger: {
-        trigger: '#portfolioGrid',
-        start: 'top 88%',
-      },
-      y: 50,
-      opacity: 0,
-      scale: 0.94,
-      duration: 0.65,
-      stagger: 0.1,
-      ease: 'power3.out',
-    });
-  }
+  gsap.utils.toArray('.portfolio-card').forEach((card, i) => {
+    gsap.fromTo(
+      card,
+      { y: 40, opacity: 0, scale: 0.95 },
+      {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 0.6,
+        delay: (i % 3) * 0.1,
+        ease: 'power3.out',
+        clearProps: 'transform,opacity',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 92%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+  });
 
   // 7. Counter Roll-Up (About Years Exp)
   gsap.utils.toArray('.counter').forEach((counter) => {
     const target = parseInt(counter.getAttribute('data-target') || '0', 10);
     ScrollTrigger.create({
       trigger: counter,
-      start: 'top 90%',
+      start: 'top 92%',
       once: true,
       onEnter: () => {
         const obj = { val: 0 };
         gsap.to(obj, {
           val: target,
-          duration: 1.5,
+          duration: 1.4,
           ease: 'power2.out',
           onUpdate: () => {
             counter.textContent = Math.floor(obj.val);
@@ -616,8 +657,8 @@ function initPortfolioFilter() {
           if (typeof gsap !== 'undefined') {
             gsap.fromTo(
               item,
-              { scale: 0.85, opacity: 0 },
-              { scale: 1, opacity: 1, duration: 0.45, ease: 'power2.out' }
+              { scale: 0.88, opacity: 0 },
+              { scale: 1, opacity: 1, duration: 0.4, ease: 'power2.out', clearProps: 'transform' }
             );
           }
         } else {
@@ -673,7 +714,6 @@ function initMagneticButtons() {
 function initNavbar() {
   const navbar = document.getElementById('mainNav');
   const navbarCollapse = document.getElementById('navbarNav');
-  const togglerBtn = document.getElementById('navbarTogglerBtn');
   const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
   const sections = document.querySelectorAll('section[id]');
 
