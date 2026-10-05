@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initLenis();
   initThemeToggle();
   initNavbar();
+  initPortfolioProjects();
+  initPortfolioTiltCards();
   initMagneticButtons();
   initGSAPAnimations();
   initPortfolioFilter();
@@ -415,12 +417,15 @@ function initCustomCursor() {
   }
   animateOutline();
 
-  const hoverElements = document.querySelectorAll(
-    'a, button, .magnetic-btn, .service-card, .portfolio-card, .filter-btn, input, textarea, .skill-item'
-  );
-  hoverElements.forEach((el) => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  document.addEventListener('mouseover', (e) => {
+    if (e.target.closest('a, button, .magnetic-btn, .service-card, .portfolio-card, .filter-btn, input, textarea, .skill-item')) {
+      document.body.classList.add('cursor-hover');
+    }
+  });
+  document.addEventListener('mouseout', (e) => {
+    if (e.target.closest('a, button, .magnetic-btn, .service-card, .portfolio-card, .filter-btn, input, textarea, .skill-item')) {
+      document.body.classList.remove('cursor-hover');
+    }
   });
 
   document.addEventListener('mouseleave', () => {
@@ -630,13 +635,210 @@ function initGSAPAnimations() {
   });
 }
 
+/* ============================================
+   CENTRALIZED PORTFOLIO PROJECTS DATA
+   Add new projects here to automatically generate portfolio cards.
+   ============================================ */
+const portfolioProjects = [
+  {
+    title: 'MIR Outfit E-Commerce',
+    description: 'Full-featured fashion e-commerce storefront with product catalog, search, dynamic filters, cart, user auth, and complete Firestore management.',
+    image: 'images/projects/mir-outfit.jpg',
+    category: 'websites javascript',
+    badge: 'E-Commerce',
+    technologies: ['JavaScript', 'HTML5', 'CSS3', 'Firebase'],
+    liveDemo: 'https://mir-outfit-ecommerce.vercel.app',
+    github: 'https://github.com/RashidAyub/mir-outfit-ecommerce',
+  },
+  {
+    title: 'Solar Energy Company Website',
+    description: 'High-performance renewable energy company platform featuring modern branding, interactive service calculators, project showcases, and contact inquiry forms.',
+    image: 'images/projects/solar-energy.jpg',
+    category: 'websites ui',
+    badge: 'Clean Energy UI',
+    technologies: ['HTML5', 'CSS3', 'JavaScript', 'Responsive UI'],
+    liveDemo: 'https://solar-energy-company-website-six.vercel.app',
+    github: 'https://github.com/RashidAyub/-Solar-Energy-Company-Website',
+  },
+  {
+    title: 'BookStore Web App',
+    description: 'Interactive online bookstore featuring a categorized catalog, bestsellers gallery, book reviews, FAQ accordions, and fluid mobile navigation.',
+    image: 'images/projects/bookstore.jpg',
+    category: 'websites javascript',
+    badge: 'Web Store',
+    technologies: ['HTML5', 'CSS3', 'JavaScript', 'Bootstrap 5'],
+    liveDemo: 'https://book-store-mir10.vercel.app',
+    github: 'https://github.com/RashidAyub/BookStore',
+  },
+  {
+    title: 'Clinic & Patient Management System',
+    description: 'Digital healthcare management dashboard for tracking patient appointments, medical consultation records, and clinical department workflows.',
+    image: 'images/projects/clinic-management.jpg',
+    category: 'react javascript',
+    badge: 'Health Dashboard',
+    technologies: ['React', 'JavaScript', 'Tailwind CSS', 'Vite'],
+    liveDemo: 'https://clinic-patient-management-eosin.vercel.app',
+    github: 'https://github.com/RashidAyub/Clinic-Patient-Management-System',
+  },
+  {
+    title: 'MIR Software House',
+    description: 'Tech agency web platform showcasing enterprise software, AI integrations, cloud solutions, client case studies, and modern glassmorphism styling.',
+    image: 'images/projects/SoftwareHouse.jpg',
+    category: 'websites ui',
+    badge: 'Agency & Tech',
+    technologies: ['HTML5', 'CSS3', 'JavaScript', 'Glassmorphism'],
+    liveDemo: 'https://software-house-mir10.vercel.app',
+    github: 'https://github.com/RashidAyub/SoftwareHouse',
+  },
+  {
+    title: 'Coffee Shop Experience',
+    description: 'Atmospheric artisan coffee storefront with specialty beverage showcase, brewing process stories, interactive menu selection, and cafe locator.',
+    image: 'images/projects/coffee-shop.jpg',
+    category: 'websites ui',
+    badge: 'Artisan Cafe',
+    technologies: ['HTML5', 'CSS3', 'JavaScript', 'UI Design'],
+    liveDemo: 'https://coffee-shop-mir10.vercel.app',
+    github: 'https://github.com/RashidAyub/Coffee-Shop',
+  },
+  {
+    title: 'Luxury 3D Gym Platform',
+    description: 'Next-gen fitness club website with dynamic trainer spotlights, virtual workout tours, membership tier comparisons, and immersive visuals.',
+    image: 'images/projects/gym.jpg',
+    category: 'websites ui',
+    badge: '3D & Fitness',
+    technologies: ['HTML5', 'CSS3', 'JavaScript', 'GSAP'],
+    liveDemo: 'https://gym-mir10.vercel.app',
+    github: 'https://github.com/RashidAyub/GYM',
+  },
+  {
+    title: 'Online Food Ordering System',
+    description: 'Responsive online culinary platform with interactive food menus, dish pricing, animated statistics counters, and user feedback sliders.',
+    image: 'images/projects/food-ordering.jpg',
+    category: 'websites javascript',
+    badge: 'Food & Dining',
+    technologies: ['HTML5', 'CSS3', 'JavaScript', 'REST API'],
+    liveDemo: 'https://online-food-ordering-system-lake.vercel.app',
+    github: 'https://github.com/RashidAyub/Online-Food-Ordering-System',
+  },
+  {
+    title: 'Dealer Evaluation Microservices',
+    description: 'Cloud microservices architecture for automotive dealer evaluation, pricing analysis, and automated audit scoring across distributed endpoints.',
+    image: 'images/projects/Dealer-Evaluation-Microservices.png',
+    category: 'javascript',
+    badge: 'Microservices',
+    technologies: ['Node.js', 'Express', 'Microservices', 'REST API'],
+    liveDemo: null,
+    github: 'https://github.com/RashidAyub/Dealer-Evaluation-Microservices',
+  },
+];
+
+// Centralized access for future extensions or runtime inspection
+window.portfolioProjects = portfolioProjects;
+
+/* ---------- Render Dynamic Portfolio Cards ---------- */
+function initPortfolioProjects() {
+  const grid = document.getElementById('portfolioGrid');
+  if (!grid || !Array.isArray(portfolioProjects)) return;
+
+  grid.innerHTML = portfolioProjects
+    .map((p) => {
+      const demoBtn = p.liveDemo
+        ? `<a href="${p.liveDemo}" target="_blank" rel="noopener noreferrer" class="btn-card-link demo-btn magnetic-btn" aria-label="Live Demo for ${p.title}">
+             <i class="fas fa-external-link-alt me-1"></i> Live Demo
+           </a>`
+        : `<span class="btn-card-link demo-btn demo-btn-unavailable" title="Backend microservice project (Live demo not deployed)" aria-label="Live Demo not available yet">
+             <i class="fas fa-clock me-1"></i> Demo Soon
+           </span>`;
+
+      const tags = (p.technologies || [])
+        .map((t) => `<span class="tech-tag">${t}</span>`)
+        .join('');
+
+      return `
+        <div class="col-md-6 col-lg-4 portfolio-item" data-category="${p.category || ''}">
+          <div class="portfolio-card glass-card">
+            <div class="portfolio-image-wrap">
+              <img src="${p.image}" alt="${p.title} Project Preview" class="portfolio-img" loading="lazy" width="400" height="260">
+              <div class="portfolio-badge">${p.badge || 'Project'}</div>
+            </div>
+            <div class="portfolio-content">
+              <h4 class="portfolio-title">${p.title}</h4>
+              <p class="portfolio-desc">${p.description}</p>
+              <div class="portfolio-tags">
+                ${tags}
+              </div>
+              <div class="portfolio-card-links">
+                ${demoBtn}
+                <a href="${p.github}" target="_blank" rel="noopener noreferrer" class="btn-card-link github-btn magnetic-btn" aria-label="GitHub Repository for ${p.title}">
+                  <i class="fab fa-github me-1"></i> GitHub
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    })
+    .join('');
+}
+
+/* ---------- 3D Portfolio Card Tilt (Desktop Only) ---------- */
+function initPortfolioTiltCards() {
+  if (
+    window.innerWidth <= 991 ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    window.matchMedia('(pointer: coarse)').matches
+  ) {
+    return;
+  }
+
+  const cards = document.querySelectorAll('.portfolio-card');
+  cards.forEach((card) => {
+    if (card.dataset.tiltBound) return;
+    card.dataset.tiltBound = 'true';
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+      const rotateX = y * -8;
+      const rotateY = x * 8;
+
+      if (typeof gsap !== 'undefined') {
+        gsap.to(card, {
+          rotateX,
+          rotateY,
+          duration: 0.35,
+          ease: 'power2.out',
+          transformPerspective: 900,
+          transformOrigin: 'center center',
+        });
+      }
+    });
+
+    card.addEventListener('mouseleave', () => {
+      if (typeof gsap !== 'undefined') {
+        gsap.to(card, {
+          rotateX: 0,
+          rotateY: 0,
+          duration: 0.55,
+          ease: 'power2.out',
+          transformPerspective: 900,
+        });
+      }
+    });
+  });
+}
+
 /* ---------- Portfolio Category Filter with GSAP ---------- */
 function initPortfolioFilter() {
   const filterBtns = document.querySelectorAll('.filter-btn');
-  const items = document.querySelectorAll('.portfolio-item');
-  if (!filterBtns.length || !items.length) return;
+  if (!filterBtns.length) return;
 
   filterBtns.forEach((btn) => {
+    if (btn.dataset.filterBound) return;
+    btn.dataset.filterBound = 'true';
+
     btn.addEventListener('click', () => {
       filterBtns.forEach((b) => {
         b.classList.remove('active');
@@ -646,6 +848,7 @@ function initPortfolioFilter() {
       btn.setAttribute('aria-selected', 'true');
 
       const filter = btn.getAttribute('data-filter');
+      const items = document.querySelectorAll('.portfolio-item');
 
       // Animate filter transition smoothly
       items.forEach((item) => {
@@ -678,6 +881,9 @@ function initMagneticButtons() {
   if (window.innerWidth <= 991 || window.matchMedia('(pointer: coarse)').matches) return;
 
   document.querySelectorAll('.magnetic-btn').forEach((btn) => {
+    if (btn.dataset.magneticBound) return;
+    btn.dataset.magneticBound = 'true';
+
     btn.addEventListener('mousemove', (e) => {
       const rect = btn.getBoundingClientRect();
       const x = e.clientX - rect.left - rect.width / 2;

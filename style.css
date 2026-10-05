@@ -1198,11 +1198,13 @@ body.loading {
 
 /* Portfolio Card */
 .portfolio-card {
+  position: relative;
   border-radius: 18px;
   overflow: hidden;
   height: 100%;
   display: flex;
   flex-direction: column;
+  transform-style: preserve-3d;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
@@ -1217,6 +1219,24 @@ body.loading {
   overflow: hidden;
   aspect-ratio: 16 / 10;
   background-color: #1a2234;
+}
+
+.portfolio-image-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.75s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.portfolio-card:hover .portfolio-image-wrap::after {
+  left: 140%;
 }
 
 .portfolio-img {
@@ -1311,6 +1331,21 @@ body.loading {
 .btn-card-link.demo-btn:hover {
   box-shadow: 0 4px 15px rgba(var(--accent-gold-rgb), 0.4);
   transform: translateY(-2px);
+}
+
+.btn-card-link.demo-btn-unavailable {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted) !important;
+  border: 1px dashed var(--border-color);
+  cursor: default;
+  opacity: 0.85;
+}
+
+.btn-card-link.demo-btn-unavailable:hover {
+  transform: none;
+  box-shadow: none;
+  color: var(--text-secondary) !important;
+  border-color: rgba(255, 193, 7, 0.3);
 }
 
 .btn-card-link.github-btn {
